@@ -43,7 +43,7 @@
                     <option value="">All scanpatrollers test</option>
                 </select>
 
-    <div id="infotext"> </div>
+    <div id="infotext">   </div>
 
                 
                    
@@ -61,13 +61,12 @@
 
         var gmarkers = [];
        
-
-
+       
         function makemap()
         
         {
             var mapOptions =    {
-                center: new google.maps.LatLng(51.20458,3.227961),
+                center: new google.maps.LatLng(51.20858,3.227961),
                 zoom: 14,
                 mapTypeId: google.maps.MapTypeId.HYBRID
             };
@@ -117,7 +116,7 @@
                     infowindow.open(map, marker);
                     map.panTo(this.getPosition());
                     map.setZoom(15);
-                    document.getElementById("infotext").innerHTML=title
+                    document.getElementById("infotext").innerHTML="Date and time : <br>"+ title
                 }
             })(marker, content));
 
