@@ -58,7 +58,7 @@
         var markers = @Html.Raw(ViewBag.Jsonlist);
         var patrollers =@Html.Raw(ViewBag.Patrollistjson);
         var colors = ["red","blue","yellow","green","orange"];
-
+        var infowindow = new google.maps.InfoWindow();
         var gmarkers = [];
        
        
@@ -89,16 +89,16 @@
             var datestring = moment(marker.HTQU_CreatedOn).format("MMMM Do YYYY, h:mm:ss a");
             var title = datestring;
             var content = datestring;
-            
+           
             var iconcolor = colors[patrollers.indexOf(marker.HTQU_PatrollerMOBI_ID)]
-            var infowindow = new google.maps.InfoWindow ();
+           
 
             marker = new google.maps.Marker({
                 
                 title : title,
                 position : pos,
                 category : category,
-                content : content,
+               
                 map: map,
                 animation : google.maps.Animation.DROP,
                 icon : 'http://www.google.com/intl/en_us/mapfiles/ms/micons/' + iconcolor + '-dot.png',
@@ -109,16 +109,16 @@
             gmarkers.push(marker);
 
             //Marker click listener
-            google.maps.event.addListener(marker, 'click', (function (marker, content) {
-                return function () {
-                    console.log('Gmarker gets pushed');
-                    infowindow.setContent(content);
+            google.maps.event.addListener(marker, 'click', function () {
+               
+                infowindow.setOptions({
+                    content : this.title,
+                                })
+                                                         
                     infowindow.open(map, marker);
-                    map.panTo(this.getPosition());
-                    map.setZoom(15);
+                   
                     document.getElementById("infotext").innerHTML="Date and time : <br>"+ title
-                }
-            })(marker, content));
+                 })
 
         };
 
