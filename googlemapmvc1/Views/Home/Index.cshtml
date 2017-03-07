@@ -78,9 +78,12 @@
         var gmarkers = [];
         var scancars = document.getElementById("scancars");
         var scancarselected = scancars.value;
+        var renderOptions = {suppressMarkers : true};
+
         var directionsService = new google.maps.DirectionsService;
-        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var directionsDisplay = new google.maps.DirectionsRenderer(renderOptions);
         var directionmarkers = [];
+        var waypts = [];
 
         for (i=1;i<=patrollers.length;i++) {
             $('#scancars').append ("<option value="+patrollers[i]+">patroller" + i  + "</option>")
@@ -106,7 +109,7 @@
         //show route     
         $("#buttonroute").click(function(){ 
 
-            for (i=0; i<markers.length; i++)
+            for (i=0; i<gmarkers.length; i++)
             {
                 
                 marker = gmarkers[i];
@@ -122,10 +125,15 @@
             
             var start = directionmarkers[0].position;                                              
             var end = directionmarkers[x].position;
+            for (i=1;i<x;i++) {
+        
+                waypts.push({location : directionmarkers[i].position, stopover : true})
+            }
                                                 
            
-            calculateAndDisplayRoute( directionsService,directionsDisplay,start,end)
-            directionsmarkers =[];
+            calculateAndDisplayRoute( directionsService,directionsDisplay,start,end,waypts)
+            directionsmarkers.length =0;
+            waypts.length = 0;
                 
              
 
@@ -133,7 +141,7 @@
                           
         })      
         
-        $("#buttonroute-hide").click(function(){directionsDisplay.set('directions',null)});
+        $("#buttonroute-hide").click(function(){directionsDisplay.set('directions',null);waypts.length=0;directionsmarkers.length=0});
 
 
         function calculateAndDisplayRoute(directionsService, directionsDisplay,pointA,pointB,waypts) {
@@ -146,6 +154,7 @@
                 if (status === google.maps.DirectionsStatus.OK) {
                     directionsDisplay.setDirections(response);
                     directionsDisplay.setMap(map);
+                    directionsDisplay.setOptions({supressMarkers : true})
                 } else {
                     window.alert('Directions request failed due to ' + status);
                 }
