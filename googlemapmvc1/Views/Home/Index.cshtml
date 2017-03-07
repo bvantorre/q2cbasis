@@ -37,7 +37,7 @@
 
     }
     #buttonroute { position : relative; top : 10px; left : 5px}
-   
+   #buttonroute-hide{position : absolute; top : 40px;left : 5px }
     
     </style>
 </head>
@@ -48,11 +48,16 @@
                    </div>
 
                
-                <select  id="menu">
-                    <option selected disabled>Select scanpatrol</option>
+                <select  name="scancars" id="scancars">
+                    <option value="">Select scanpatrol</option>
                     <option value="">All scanpatrollers</option>
                 </select>
-    <div id="route"><button id="buttonroute" type="button">show route</button></div>
+
+    <div id="route">
+    <button id="buttonroute" type="button">show route</button>
+    <button id="buttonroute-hide" type="button">hide route</button>
+    </div>
+
 
     <div id="infotext">   </div>
 
@@ -71,15 +76,26 @@
         var colors = ["red","blue","yellow","green","orange"];
         var infowindow = new google.maps.InfoWindow();
         var gmarkers = [];
+        var scancars = document.getElementById("scancars");
+        var scancarselected = scancars.value;
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var directionmarkers = [];
 
-        $('#menu').on('change',function() {
+        for (i=1;i<=patrollers.length;i++) {
+            $('#scancars').append ("<option value="+patrollers[i]+">patroller" + i  + "</option>")
+            
+        }
 
-            var category = this.value;
+        //filter scancars
+        $('#scancars').on('change',function() {
+
+           scancarselected = this.value;
 
             for (i=0; i<markers.length; i++) {
 
                 marker = gmarkers[i];
-                if(marker.category == category  || category.length === 0  ) {
+                if(marker.category == scancarselected  || scancarselected.length === 0  ) {
                     marker.setVisible(true);}
 
                 else{ marker.setVisible(false);
@@ -87,10 +103,54 @@
             }
         })
         
-                      
+        //show route     
+        $("#buttonroute").click(function(){ 
+
+            for (i=0; i<markers.length; i++)
+            {
+                
+                marker = gmarkers[i];
+                
+                if(marker.category == scancarselected)
+                {
+                    directionmarkers.push(marker)
+                }
+        
+
+            };
+            x = directionmarkers.length-1;
+            
+            var start = directionmarkers[0].position;                                              
+            var end = directionmarkers[x].position;
+                                                
+           
+            calculateAndDisplayRoute( directionsService,directionsDisplay,start,end)
+            directionsmarkers =[];
+                
+             
+
+            
+                          
+        })      
+        
+        $("#buttonroute-hide").click(function(){directionsDisplay.set('directions',null)});
 
 
-       
+        function calculateAndDisplayRoute(directionsService, directionsDisplay,pointA,pointB,waypts) {
+            directionsService.route({
+                origin: pointA,
+                destination: pointB,
+                waypoints : waypts,
+                travelMode: google.maps.TravelMode.DRIVING
+            }, function(response, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(response);
+                    directionsDisplay.setMap(map);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+        }
        
 
         function makemap()
@@ -106,6 +166,8 @@
             map = new google.maps.Map(document.getElementById("map"), mapOptions);
             for (i = 0; i < markers.length; i++) {
                 addMarker(markers[i]);
+
+         
             }
            
                         
@@ -160,11 +222,7 @@
           
         
 
-        for (i=1;i<=patrollers.length;i++) {
-          $('#menu').append ("<option value="+patrollers[i]+">patroller" + i  + "</option>")
-            
-        }
-
+      
     </script>
 </body>
 </html>
