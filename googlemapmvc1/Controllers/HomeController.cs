@@ -29,7 +29,7 @@ namespace googlemapmvc1.Controllers
 
 
 
-                 string connectionString = "Data Source=t0vx608gfo.database.windows.net;Initial Catalog=Q2C_CloudMobile_Brugge_Android;Persist Security Info=True;User ID=SQLAdmin;Password=Q2C_141500";
+                 string connectionString = "data source=ikt4ztoj17.database.windows.net;initial catalog=Q2CCloudMobile_OPC;user id=SQLAdmin;password=Q2C_141500";
             SqlConnection connection = new SqlConnection(connectionString);
             try
             {
@@ -37,7 +37,7 @@ namespace googlemapmvc1.Controllers
                 connection.Open();
 
                 //Get vehcile list
-                var fullList = connection.Query<Carread>("SELECT TOP 50 * FROM [MOBILEQueue_LOCT_9CA8AE6D-80D6-4740-AFEB-88CEA98EBA6B] ORDER BY HTQU_CreatedOn DESC");
+                var fullList = connection.Query<Carread>("SELECT TOP 50 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
                 carList1 = fullList.Take(25);
 
