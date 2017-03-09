@@ -188,9 +188,10 @@
             var pos = new google.maps.LatLng(marker.HTQU_Latitude,marker.HTQU_Longitude);
                                      
             
-            var datestring = moment(marker.HTQU_CreatedOn).format("MMMM Do YYYY, h:mm:ss a");
-            var title = datestring;
-            var content = datestring;
+            var datetimestring = moment(marker.HTQU_CreatedOn).format("MMMM Do YYYY, h:mm:ss a");
+
+            var title = datetimestring;
+            var content = datetimestring;
            
             var iconcolor = colors[patrollers.indexOf(marker.HTQU_PatrollerMOBI_ID)]
            
@@ -223,6 +224,8 @@
                  })
 
         };
+
+
                
 
         makemap();

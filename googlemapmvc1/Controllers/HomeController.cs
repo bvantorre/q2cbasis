@@ -23,7 +23,7 @@ namespace googlemapmvc1.Controllers
             var returnPatrollist = new List<Patrollermodel>();
             var carTypesGuidList = new List<Guid>();
             var listsByPatrolId = new List<List<Carread>>();
-           
+            
            
 
 
@@ -44,6 +44,7 @@ namespace googlemapmvc1.Controllers
                 //Create 2nd vehicle list
                 carList2 = fullList.Skip(25).Take(25);
 
+                
 
                 Guid newVehicleGuid = Guid.NewGuid();
                 foreach (var item in carList2)
@@ -57,6 +58,11 @@ namespace googlemapmvc1.Controllers
                 var cartypes = (from x in returnFullList
                                 orderby x.HTQU_PatrollerMOBI_ID
                                 select x.HTQU_PatrollerMOBI_ID).Distinct();
+
+              
+               
+              
+
 
                 carTypesGuidList = cartypes.ToList();
 
