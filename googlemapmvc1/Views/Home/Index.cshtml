@@ -33,6 +33,7 @@
               border : 1px;border-style : solid; border-color : black;
               height : 200px; width : 260px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
               padding : 10px;background-color:white;
     }
 
@@ -178,9 +179,13 @@
                     content : this.title,
                                 })
 
-                    infowindow.open(map, marker);
+                infowindow.open(map, marker);
 
-                    document.getElementById("infotext").innerHTML="<b>Data selected marker</b><br><br><u>Date and time : <u><br>"+ title + "<br><br> <u>Coordinates : </u><br>" + pos
+                var posstring = String(pos);
+
+
+                console.log(posstring)
+                document.getElementById("infotext").innerHTML="<b>Data selected marker</b><br><br><u>Date and time : </u><br>"+ title + "<br><br> <u>Coordinates : </u><br>" + posstring.match(/[^()]+/)
                  })
 
         };
