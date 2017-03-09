@@ -39,10 +39,7 @@ namespace googlemapmvc1.Controllers
                 //Get vehcile list
                 var fullList = connection.Query<Carread>("SELECT TOP 500 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
-                carList1 = fullList.Take(250);
-
-                //Create 2nd vehicle list
-                carList2 = fullList.Skip(250).Take(250);
+                
 
                 
 
@@ -52,8 +49,8 @@ namespace googlemapmvc1.Controllers
                     item.HTQU_PatrollerMOBI_ID = newVehicleGuid;
                 }
                 //Combine 2 lists
-                returnFullList.AddRange(carList1);
-                returnFullList.AddRange(carList2);
+                returnFullList.AddRange(fullList);
+               
 
                 var cartypes = (from x in returnFullList
                                 orderby x.HTQU_PatrollerMOBI_ID
