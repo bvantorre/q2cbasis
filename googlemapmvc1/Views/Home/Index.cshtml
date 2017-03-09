@@ -39,8 +39,9 @@
 
     #statistic {position : absolute; top : 140px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 200px; width : 260px; border-radius : 10px;padding : 10px;background-color :white
-
+              height : 200px; width : 260px; border-radius : 10px;padding : 10px;background-color :white;
+               font-family: 'Open Sans', sans-serif;
+              font-size : 11px; 
 
 
     }
@@ -118,6 +119,10 @@
             for (i = 0; i < markers.length; i++) {
                 addMarker(markers[i]);}
 
+            google.maps.event.addListener(map,'idle',function(){
+                showVisibleMarkers();
+
+            })
 
             for (i = 0; i < markers.length; i++) {
                                   
@@ -140,6 +145,22 @@
                 var markerCluster = new MarkerClusterer(map, gmarkers,
                 {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
             };
+
+        }
+
+        function showVisibleMarkers() {
+            var bounds = map.getBounds();
+            count = 0;
+
+            for (var i=0; i< markers.length;i++) {
+
+                var marker = gmarkers[i];
+                if(bounds.contains(marker.getPosition())===true) {
+                    count++
+
+                }
+            }
+            $("#statistic").html(count + " reads in actual zoom");
 
         }
          
