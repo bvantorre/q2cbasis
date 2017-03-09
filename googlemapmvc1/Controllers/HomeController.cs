@@ -37,12 +37,12 @@ namespace googlemapmvc1.Controllers
                 connection.Open();
 
                 //Get vehcile list
-                var fullList = connection.Query<Carread>("SELECT TOP 50 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
+                var fullList = connection.Query<Carread>("SELECT TOP 500 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
-                carList1 = fullList.Take(25);
+                carList1 = fullList.Take(250);
 
                 //Create 2nd vehicle list
-                carList2 = fullList.Skip(25).Take(25);
+                carList2 = fullList.Skip(250).Take(250);
 
                 
 

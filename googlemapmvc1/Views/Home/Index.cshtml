@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width",initial-scale="1" />
     <title>Index</title>
-    <style>#map {height : 500px ;width : 970px; position : absolute; left : 350px;top: 65px; border-radius : 10px}
+    <style>#map {height : 525px ;width : 970px; position : absolute; left : 350px;top: 65px; border-radius : 10px}
     select {position : absolute;
                 left:50px;
                 top:65px;
@@ -23,21 +23,27 @@
 
 
 
-    p {font-size : 20px}
-    body {
+   
+        body {
+            
+        
     background-color: white}
-    #infotext{position : absolute; top : 365px;left : 50px ;
+
+    #infotext{position : absolute; top : 370px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 200px; width : 250px;border-radius : 10px
+              height : 200px; width : 260px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              padding : 10px;
     }
-    #route {position : absolute; top : 140px;left : 50px ;
+
+    #statistic {position : absolute; top : 140px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 200px; width : 250px;border-radius : 10px
+              height : 200px; width : 260px; border-radius : 10px;padding : 10px
 
 
+
     }
-    #buttonroute { position : relative; top : 10px; left : 5px}
-   #buttonroute-hide{position : absolute; top : 40px;left : 5px }
+   
     
     </style>
 </head>
@@ -45,7 +51,7 @@
    
 
                 <div id="map">
-                   </div>
+                  </div>
 
                
                 <select  name="scancars" id="scancars">
@@ -53,13 +59,12 @@
                     <option value="">All scanpatrollers</option>
                 </select>
 
-    <div id="route">
-    <button id="buttonroute" type="button">show route</button>
-    <button id="buttonroute-hide" type="button">hide route</button>
+    <div id="statistic">
+    
     </div>
 
 
-    <div id="infotext">   </div>
+    <div id="infotext"></div>
 
                 
                    
@@ -67,7 +72,9 @@
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/moment.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDe1iRGmDMXSwy0py_TRHruCp49TO0eyuU"></script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
     <script type="text/javascript">
 
 
@@ -87,7 +94,7 @@
 
         for (i=1;i<=patrollers.length;i++) {
             $('#scancars').append ("<option value="+patrollers[i]+">patroller" + i  + "</option>")
-            
+
         }
 
         //filter scancars
@@ -105,65 +112,14 @@
                 }
             }
         })
-        
-        //show route     
-        $("#buttonroute").click(function(){ 
-
-            for (i=0; i<gmarkers.length; i++)
-            {
-                
-                marker = gmarkers[i];
-                
-                if(marker.category == scancarselected)
-                {
-                    directionmarkers.push(marker)
-                }
-        
-
-            };
-            x = directionmarkers.length-1;
-            
-            var start = directionmarkers[0].position;                                              
-            var end = directionmarkers[x].position;
-            for (i=1;i<x;i++) {
-        
-                waypts.push({location : directionmarkers[i].position, stopover : true})
-            }
-                                                
-           
-            calculateAndDisplayRoute( directionsService,directionsDisplay,start,end,waypts)
-            directionsmarkers.length =0;
-            waypts.length = 0;
-                
-             
-
-            
-                          
-        })      
-        
-        $("#buttonroute-hide").click(function(){directionsDisplay.set('directions',null);waypts.length=0;directionsmarkers.length=0});
 
 
-        function calculateAndDisplayRoute(directionsService, directionsDisplay,pointA,pointB,waypts) {
-            directionsService.route({
-                origin: pointA,
-                destination: pointB,
-                waypoints : waypts,
-                travelMode: google.maps.TravelMode.DRIVING
-            }, function(response, status) {
-                if (status === google.maps.DirectionsStatus.OK) {
-                    directionsDisplay.setDirections(response);
-                    directionsDisplay.setMap(map);
-                    directionsDisplay.setOptions({supressMarkers : true})
-                } else {
-                    window.alert('Directions request failed due to ' + status);
-                }
-            });
-        }
-       
+
+
+
 
         function makemap()
-        
+
         {
             var mapOptions =    {
                 center: new google.maps.LatLng(51.20858,3.227961),
@@ -173,68 +129,90 @@
 
 
             map = new google.maps.Map(document.getElementById("map"), mapOptions);
-            for (i = 0; i < markers.length; i++) {
-                addMarker(markers[i]);
 
-         
-            }
-           
-                        
+          
+
+            for (i = 0; i < markers.length; i++) {
+                addMarker(markers[i]);}
+
+
+            for (i = 0; i < markers.length; i++) {
+                                  
+               
+                for (j=0;j< (markers.length-i);j++) {
+                    var pos = {lat : markers[i].HTQU_Latitude, lng : markers[i].HTQU_Longitude};
+
+                    var posnext =  {lat : markers[j].HTQU_Latitude, lng : markers[j].HTQU_Longitude};
+                   
+                    if (pos == posnext) {
+                        var a = 360.0 / markers.length;
+                        var newLat = pos.lat() + -.00004 * Math.cos((+a*i) / 180 * Math.PI);  //x
+                        var newLng = pos.lng() + -.00004 * Math.sin((+a*i) / 180 * Math.PI);  //Y
+                        var latLng = new google.maps.LatLng(newLat,newLng);
+                    }
+
+
+                }
+
+                var markerCluster = new MarkerClusterer(map, gmarkers,
+                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+            };
+
         }
-       
+         
         function addMarker(marker) {
 
             var category = marker.HTQU_PatrollerMOBI_ID;
             var pos = new google.maps.LatLng(marker.HTQU_Latitude,marker.HTQU_Longitude);
-                                     
-            
+
+
             var datetimestring = moment(marker.HTQU_CreatedOn).format("MMMM Do YYYY, h:mm:ss a");
 
             var title = datetimestring;
             var content = datetimestring;
-           
+
             var iconcolor = colors[patrollers.indexOf(marker.HTQU_PatrollerMOBI_ID)]
-           
+
 
             marker = new google.maps.Marker({
-                
+
                 title : title,
                 position : pos,
                 category : category,
-               
+
                 map: map,
                 animation : google.maps.Animation.DROP,
                 icon : 'http://www.google.com/intl/en_us/mapfiles/ms/micons/' + iconcolor + '-dot.png',
-               
-                
+
+
             });
 
             gmarkers.push(marker);
 
             //Marker click listener
             google.maps.event.addListener(marker, 'click', function () {
-               
+
                 infowindow.setOptions({
                     content : this.title,
                                 })
-                                                         
+
                     infowindow.open(map, marker);
-                   
-                    document.getElementById("infotext").innerHTML="Date and time : <br>"+ title
+
+                    document.getElementById("infotext").innerHTML="<b>Data selected marker</b><br><br><u>Date and time : <u><br>"+ title + "<br><br> <u>Coordinates : </u><br>" + pos
                  })
 
         };
 
 
-               
+
 
         makemap();
 
-                   
-          
-        
 
-      
+
+
+
+
     </script>
 </body>
 </html>
