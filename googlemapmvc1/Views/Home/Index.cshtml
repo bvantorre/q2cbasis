@@ -27,28 +27,43 @@
         body {
             
         
-    background-color: white}
+    background-color:#0000FF}
 
     #infotext{position : absolute; top : 370px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
               height : 200px; width : 260px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
-              padding : 10px;
+              padding : 10px;background-color:white;
     }
 
     #statistic {position : absolute; top : 140px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 200px; width : 260px; border-radius : 10px;padding : 10px
+              height : 200px; width : 260px; border-radius : 10px;padding : 10px;background-color :white
 
 
 
     }
+    ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #0000FF;
+}
+
+
+   
    
     
     </style>
 </head>
 <body>
-   
+    <ul>
+       <li><img src="http://www.q2c.be/Content/Images/q2c-logo-neg.png" alt="test" style="width : 62px; height: 20px;"></li>
+    </ul>
+
+
+ 
 
    <div id="map"></div>
 
@@ -73,8 +88,8 @@
         var colors = ["red","blue","yellow","green","orange"];
         var infowindow = new google.maps.InfoWindow();
         var gmarkers = [];
-        var scancars = document.getElementById("scancars");
-        var scancarselected = scancars.value;
+        
+       
         var renderOptions = {suppressMarkers : true};
 
         var directionsService = new google.maps.DirectionsService;

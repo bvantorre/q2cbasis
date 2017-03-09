@@ -43,13 +43,8 @@ namespace googlemapmvc1.Controllers
 
                 
 
-                Guid newVehicleGuid = Guid.NewGuid();
-                foreach (var item in carList2)
-                {
-                    item.HTQU_PatrollerMOBI_ID = newVehicleGuid;
-                }
-                //Combine 2 lists
-                returnFullList.AddRange(fullList);
+               
+                returnFullList=fullList.ToList();
                
 
                 var cartypes = (from x in returnFullList
