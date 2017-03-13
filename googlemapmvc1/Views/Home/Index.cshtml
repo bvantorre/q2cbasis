@@ -19,42 +19,42 @@
                 border-radius : 10px
 
     }
-  
-
-
-
-   
-        body {
-            
+         
+        body {           
         
     background-color:#0000FF}
 
-    #infotext{position : absolute; top : 370px;left : 50px ;
+    #dateselector {position : absolute; top : 65px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 200px; width : 260px; border-radius : 10px;
+              height : 150px; width : 260px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
               font-size : 11px;
               padding : 10px;background-color:white;
     }
 
-    #statistic {position : absolute; top : 140px;left : 50px ;
+    #dates,#datetitle { font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 12px;background-color:white;
+              margin : 2px;
+    }
+
+    #infotext{position : absolute; top : 420px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 200px; width : 260px; border-radius : 10px;padding : 10px;background-color :white;
+              height : 150px; width : 260px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 10px;background-color:white;
+    }
+
+    #statistic {position : absolute; top : 240px;left : 50px ;
+              border : 1px;border-style : solid; border-color : black;
+              height : 150px; width : 260px; border-radius : 10px;padding : 10px;background-color :white;
                font-family: 'Open Sans', sans-serif;
               font-size : 11px; 
 
-
     }
-    ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #0000FF;
-}
-
-
    
+          
    
     
     </style>
@@ -68,6 +68,11 @@
  
 
    <div id="map"></div>
+
+    <div id="dateselector">
+    <h1 id="datetitle">Scan days</h1>
+    <ul id="dates"></ul>
+    </div>
 
    <div id="statistic"></div>
 
@@ -87,6 +92,8 @@
 
         var markers = @Html.Raw(ViewBag.Jsonlist);
         var patrollers =@Html.Raw(ViewBag.Patrollistjson);
+        var days = @Html.Raw(ViewBag.Daysjson);
+        var dayschron = days.reverse();
         var colors = ["red","blue","yellow","green","orange"];
         var infowindow = new google.maps.InfoWindow();
         var gmarkers = [];
@@ -98,10 +105,27 @@
         var directionsDisplay = new google.maps.DirectionsRenderer(renderOptions);
         var directionmarkers = [];
         var waypts = [];
+      
 
        
+        //data for dateselector
 
+       
+        document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
+        
+        for (i=0;i<dayschron.length;i++) {
 
+            var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
+            var datenode = document.createElement("li");
+            var datetext = document.createTextNode( dayformatted);
+            datenode.appendChild(datetext);
+            document.getElementById("dates").appendChild(datenode);
+
+        }
+        ;
+
+       
+        //make map and add marker 
         function makemap()
 
         {

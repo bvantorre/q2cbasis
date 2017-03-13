@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using static googlemapmvc1.Models.Bigcarmodel;
 using System.Data.SqlClient;
 using Dapper;
+using System.Diagnostics;
 
 
 namespace googlemapmvc1.Controllers
@@ -23,7 +24,7 @@ namespace googlemapmvc1.Controllers
             var returnPatrollist = new List<Patrollermodel>();
             var carTypesGuidList = new List<Guid>();
             var listsByPatrolId = new List<List<Carread>>();
-            
+            var days = new List<DateTime>();
            
 
 
@@ -37,7 +38,7 @@ namespace googlemapmvc1.Controllers
                 connection.Open();
 
                 //Get vehcile list
-                var fullList = connection.Query<Carread>("SELECT TOP 500 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
+                var fullList = connection.Query<Carread>("SELECT TOP 2000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
                 
 
@@ -51,10 +52,12 @@ namespace googlemapmvc1.Controllers
                                 orderby x.HTQU_PatrollerMOBI_ID
                                 select x.HTQU_PatrollerMOBI_ID).Distinct();
 
-              
-               
-              
 
+                var daytypes = (from x in returnFullList select x.HTQU_CreatedOn.Date).Distinct();
+
+                days = daytypes.ToList();
+
+                Debug.WriteLine("bart" + days.Count());
 
                 carTypesGuidList = cartypes.ToList();
 
@@ -79,9 +82,11 @@ namespace googlemapmvc1.Controllers
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             string jsonlist = serializer.Serialize(returnFullList);
             string patrollistjson = serializer.Serialize(carTypesGuidList);
-            
+            string daysjson = serializer.Serialize(days);
+
             ViewBag.Jsonlist = jsonlist;
             ViewBag.Patrollistjson = patrollistjson;
+            ViewBag.Daysjson = daysjson;
 
             return View();
 
