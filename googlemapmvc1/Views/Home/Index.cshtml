@@ -11,20 +11,13 @@
     <meta name="viewport" content="width=device-width",initial-scale="1" />
     <title>Index</title>
     <style>#map {height : 525px ;width : 970px; position : absolute; left : 350px;top: 65px; border-radius : 10px}
-    select {position : absolute;
-                left:50px;
-                top:65px;
-                font-size: 16px;
-                display: inline-block;
-                border-radius : 10px
-
-    }
+    
          
-        body {           
+   body {           
         
     background-color:#0000FF}
 
-    #dateselector {position : absolute; top : 65px;left : 50px ;
+    #date-info {position : absolute; top : 65px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
               height : 150px; width : 260px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
@@ -38,6 +31,34 @@
               margin : 2px;
     }
 
+  #dateselector {
+            position: absolute;
+            top: 245px;
+            left: 50px;
+            border: 1px;
+            border-style: solid;
+            border-color: black;
+            height: 100px;
+            width: 260px;
+            border-radius: 10px;
+            padding: 10px;
+            background-color: white;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 11px;
+        }
+
+
+
+    
+
+     #statistic {position : absolute; top : 375px;left : 50px ;
+              border : 1px;border-style : solid; border-color : black;
+              height : 20px; width : 260px; border-radius : 10px;padding : 10px;background-color :white;
+               font-family: 'Open Sans', sans-serif;
+              font-size : 11px; 
+
+    }
+
     #infotext{position : absolute; top : 420px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
               height : 150px; width : 260px; border-radius : 10px;
@@ -46,13 +67,7 @@
               padding : 10px;background-color:white;
     }
 
-    #statistic {position : absolute; top : 240px;left : 50px ;
-              border : 1px;border-style : solid; border-color : black;
-              height : 150px; width : 260px; border-radius : 10px;padding : 10px;background-color :white;
-               font-family: 'Open Sans', sans-serif;
-              font-size : 11px; 
-
-    }
+   
    
           
    
@@ -69,10 +84,16 @@
 
    <div id="map"></div>
 
-    <div id="dateselector">
+
+   
+    <div id="date-info">
     <h1 id="datetitle">Scan days</h1>
     <ul id="dates"></ul>
     </div>
+
+    <div id=dateselector></div>
+
+
 
    <div id="statistic"></div>
 
@@ -109,8 +130,7 @@
 
        
         //data for dateselector
-
-       
+               
         document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
         
         for (i=0;i<dayschron.length;i++) {
@@ -123,6 +143,9 @@
 
         }
         ;
+
+        //select 
+       
 
        
         //make map and add marker 
