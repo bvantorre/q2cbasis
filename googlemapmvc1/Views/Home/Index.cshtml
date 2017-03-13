@@ -157,11 +157,13 @@
             
 
             for (i=0;i<dayschron.length;i++) {
-                var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
-
-                $("#dateselect").append("<option value=" + dayformatted +">" +  dayformatted + "</option>")
+                var dayformat1 = moment(dayschron[i]).format("DD/MM/YYYY");
+                console.log(dayformat1)
+                $("#dateselect").append("<option value=" + dayformat1 +">" +  dayformat1 + "</option>")
 
             };
+                   
+        
 
           
 
@@ -172,8 +174,16 @@
                 for (i=0; i<markers.length; i++) {
 
                     marker = gmarkers[i];
-                    dayformatted =moment(marker.title).format("DD/MM/YYYY");
-                    
+                    var dayformat =moment(marker.category).format("DD/MM/YYYY");
+                    console.log(dayformat);
+                    if(dayformat == dateselected  || dateselected.length == 0  ) {
+                                    marker.setVisible(true);}
+
+                                else{ marker.setVisible(false);
+                                }
+                            }
+                        })
+        
                    
                    
                 
@@ -225,8 +235,8 @@
 
                 }
 
-                var markerCluster = new MarkerClusterer(map, gmarkers,
-                {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+                //var markerCluster = new MarkerClusterer(map, gmarkers,
+                //{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
             };
 
         }
