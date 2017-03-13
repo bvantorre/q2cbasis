@@ -66,7 +66,7 @@
               font-size : 11px;
               padding : 10px;background-color:white;
     }
-
+    select { border-radius : 10px}
    
    
           
@@ -75,7 +75,7 @@
     </style>
 </head>
 <body>
-    <ul>
+    <ul style="overflow : auto">
        <li><img src="http://www.q2c.be/Content/Images/q2c-logo-neg.png" alt="test" style="width : 62px; height: 20px;"></li>
     </ul>
 
@@ -125,6 +125,7 @@
         var colors = ["red","blue","yellow","green","orange"];
         var infowindow = new google.maps.InfoWindow();
         var gmarkers = [];
+        var vmarkers=[];
         var dateselect = document.getElementById("dateselect");
         var dateselected = dateselect.value;
         
@@ -135,7 +136,8 @@
         var directionsDisplay = new google.maps.DirectionsRenderer(renderOptions);
         var directionmarkers = [];
         var waypts = [];
-      
+        var map = new google.maps.Map();
+        var markerCluster = new MarkerClusterer();
 
        
         //data for dateselector
@@ -170,6 +172,7 @@
             $('#dateselect').on('change',function() {
 
                 dateselected = this.value;
+                vmarkers=[];
 
                 for (i=0; i<markers.length; i++) {
 
@@ -177,22 +180,19 @@
                     
                    
                     if(marker.category == dateselected  || dateselected.length == 0  ) {
-                                    marker.setVisible(true);}
+                        marker.setVisible(true);
+                        vmarkers.push(marker);
+                    }
 
                                 else{ marker.setVisible(false);
                                 }
-                            }
+                }
+                showVisibleMarkers(vmarkers);
+                
+
                         })
         
-                   
-            
-                
-            
-        
-            
-          
-
-
+           
        
         //make map and add marker 
         function makemap()
@@ -205,17 +205,14 @@
             };
 
 
-            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            map(document.getElementById("map"), mapOptions);
 
           
 
             for (i = 0; i < markers.length; i++) {
                 addMarker(markers[i]);}
 
-            google.maps.event.addListener(map,'idle',function(){
-                showVisibleMarkers();
-
-            })
+           
 
             for (i = 0; i < markers.length; i++) {
                                   
@@ -235,27 +232,12 @@
 
                 }
 
-                //var markerCluster = new MarkerClusterer(map, gmarkers,
-                //{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+              
             };
 
         }
 
-        function showVisibleMarkers() {
-            var bounds = map.getBounds();
-            count = 0;
-
-            for (var i=0; i< markers.length;i++) {
-
-                var marker = gmarkers[i];
-                if(bounds.contains(marker.getPosition())===true) {
-                    count++
-
-                }
-            }
-            $("#statistic").html(count + " reads in actual zoom");
-
-        }
+       
          
         function addMarker(marker) {
 
@@ -303,12 +285,32 @@
                  })
 
         };
+        function showVisibleMarkers(fmarkers) {
+            var bounds = map.getBounds();
+            count = 0;
 
+            for (var i=0; i< fmarkers.length;i++) {
 
+                var marker = fmarkers[i];
+                if(bounds.contains(marker.getPosition())===true) {
+                    count++
 
+                }
+            }
+            $("#statistic").html(count + " reads in actual zoom");
+
+        }
+
+        
 
         makemap();
+        google.maps.event.addListener(map,'idle',function(){
+            showVisibleMarkers(gmarkers);
 
+        })
+        markerCluster(map,gmarkers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'}); 
+       
 
 
 
