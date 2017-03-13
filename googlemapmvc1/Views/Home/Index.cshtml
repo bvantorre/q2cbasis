@@ -25,7 +25,7 @@
               padding : 10px;background-color:white;
     }
 
-    #dates,#datetitle { font-family: 'Open Sans', sans-serif;
+    #dates-select,#datetitle { font-family: 'Open Sans', sans-serif;
               font-size : 11px;
               padding : 12px;background-color:white;
               margin : 2px;
@@ -88,11 +88,11 @@
    
     <div id="date-info">
     <h1 id="datetitle">Scan days</h1>
-    <ul id="dates"></ul>
+    <ul id="dates-list"></ul>
     </div>
 
     <div id=dateselector>
-        <select name="date" id="dates">
+        <select name="dates-select" id="dates-select">
             <option value="">Select dates</option>
             <option value="">All dates</option>
         </select>
@@ -125,6 +125,8 @@
         var colors = ["red","blue","yellow","green","orange"];
         var infowindow = new google.maps.InfoWindow();
         var gmarkers = [];
+        var datesSelect = document.getElementById("dates-select");
+        var dateselected = datesSelect.value;
         
        
         var renderOptions = {suppressMarkers : true};
@@ -137,40 +139,49 @@
 
        
         //data for dateselector
-               
-        document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
         
-        for (i=0;i<dayschron.length;i++) {
+             
 
-            var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
-            var datenode = document.createElement("li");
-            var datetext = document.createTextNode( dayformatted);
-            datenode.appendChild(datetext);
-            document.getElementById("dates").appendChild(datenode);
-            $('dates').append("<option value=" + [i]+">" + dayformatted + "</option>")
+            document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
+        
+            for (i=0;i<dayschron.length;i++) {
 
-        }
-        ;
+                var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
+                var datenode = document.createElement("li");
+                var datetext = document.createTextNode( dayformatted);
+                datenode.appendChild(datetext);
+                document.getElementById("dates-list").appendChild(datenode);
+            
 
-       
+            };
+            
 
-        //filter scancars
-        $('#dates').on('change',function() {
+            for (i=0;i<dayschron.length;i++) {
+                var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
 
-            scancarselected = this.value;
+                $("#dates-select").append("<option value=" + dayformatted +">" +  dayformatted + "</option>")
 
-            for (i=0; i<markers.length; i++) {
+            };
 
-                marker = gmarkers[i];
-                if(marker.category == scancarselected  || scancarselected.length === 0  ) {
-                    marker.setVisible(true);}
+          
 
-                else{ marker.setVisible(false);
+            $("#dates-select").on('change',function() {
+
+                dateselected = this.value;
+
+                for (i=0; i<markers.length; i++) {
+
+                    marker = gmarkers[i];
+                    dayformatted =moment(marker.title).format("DD/MM/YYYY");
+                    if(dayformatted === dateselected  ) {
+                        marker.setVisible(true);}
+
+                    else{ marker.setVisible(false);
+                    }
                 }
-            }
-        })
+            })
         
-
+            ;
 
 
 
