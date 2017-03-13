@@ -147,12 +147,32 @@
             var datetext = document.createTextNode( dayformatted);
             datenode.appendChild(datetext);
             document.getElementById("dates").appendChild(datenode);
+            $('dates').append("<option value=" + [i]+">" + dayformatted + "</option>")
 
         }
         ;
 
-        //select 
        
+
+        //filter scancars
+        $('#dates').on('change',function() {
+
+            scancarselected = this.value;
+
+            for (i=0; i<markers.length; i++) {
+
+                marker = gmarkers[i];
+                if(marker.category == scancarselected  || scancarselected.length === 0  ) {
+                    marker.setVisible(true);}
+
+                else{ marker.setVisible(false);
+                }
+            }
+        })
+        
+
+
+
 
        
         //make map and add marker 
