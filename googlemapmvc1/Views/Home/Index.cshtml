@@ -167,16 +167,16 @@
 
           
 
-            $("#dateselect").on('change',function() {
+            $('#dateselect').on('change',function() {
 
                 dateselected = this.value;
 
                 for (i=0; i<markers.length; i++) {
 
                     marker = gmarkers[i];
-                    var dayformat =moment(marker.category).format("DD/MM/YYYY");
-                    console.log(dayformat);
-                    if(dayformat == dateselected  || dateselected.length == 0  ) {
+                    
+                   
+                    if(marker.category == dateselected  || dateselected.length == 0  ) {
                                     marker.setVisible(true);}
 
                                 else{ marker.setVisible(false);
@@ -185,7 +185,7 @@
                         })
         
                    
-                   
+            
                 
             
         
