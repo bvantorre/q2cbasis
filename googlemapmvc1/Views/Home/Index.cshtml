@@ -25,7 +25,7 @@
               padding : 10px;background-color:white;
     }
 
-    #dates-select,#datetitle { font-family: 'Open Sans', sans-serif;
+    #dateselect,#datetitle { font-family: 'Open Sans', sans-serif;
               font-size : 11px;
               padding : 12px;background-color:white;
               margin : 2px;
@@ -92,7 +92,7 @@
     </div>
 
     <div id=dateselector>
-        <select name="dates-select" id="dates-select">
+        <select name="dateselect" id="dateselect">
             <option value="">Select dates</option>
             <option value="">All dates</option>
         </select>
@@ -125,8 +125,8 @@
         var colors = ["red","blue","yellow","green","orange"];
         var infowindow = new google.maps.InfoWindow();
         var gmarkers = [];
-        var datesSelect = document.getElementById("dates-select");
-        var dateselected = datesSelect.value;
+        var dateselect = document.getElementById("dateselect");
+        var dateselected = dateselect.value;
         
        
         var renderOptions = {suppressMarkers : true};
@@ -159,13 +159,13 @@
             for (i=0;i<dayschron.length;i++) {
                 var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
 
-                $("#dates-select").append("<option value=" + dayformatted +">" +  dayformatted + "</option>")
+                $("#dateselect").append("<option value=" + dayformatted +">" +  dayformatted + "</option>")
 
             };
 
           
 
-            $("#dates-select").on('change',function() {
+            $("#dateselect").on('change',function() {
 
                 dateselected = this.value;
 
@@ -173,7 +173,8 @@
 
                     marker = gmarkers[i];
                     dayformatted =moment(marker.title).format("DD/MM/YYYY");
-                    if(dayformatted === dateselected  ) {
+                    console.log(marker.title);
+                    if(dayformatted === dateselected) {
                         marker.setVisible(true);}
 
                     else{ marker.setVisible(false);
@@ -251,7 +252,7 @@
          
         function addMarker(marker) {
 
-            var category = marker.HTQU_PatrollerMOBI_ID;
+            var category = moment(marker.HTQU_CreatedOn).format("DD/MM/YYYY");
             var pos = new google.maps.LatLng(marker.HTQU_Latitude,marker.HTQU_Longitude);
 
 
