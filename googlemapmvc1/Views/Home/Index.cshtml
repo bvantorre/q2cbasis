@@ -136,14 +136,11 @@
         var directionsDisplay = new google.maps.DirectionsRenderer(renderOptions);
         var directionmarkers = [];
         var waypts = [];
-        var map = new google.maps.Map();
-        var markerCluster = new MarkerClusterer();
+       
 
        
         //data for dateselector
-        
-             
-
+                     
             document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
         
             for (i=0;i<dayschron.length;i++) {
@@ -187,8 +184,11 @@
                                 else{ marker.setVisible(false);
                                 }
                 }
+
                 showVisibleMarkers(vmarkers);
-                
+                markerCluster.clearMarkers();
+                markerCluster.addMarkers(vmarkers);
+
 
                         })
         
@@ -205,7 +205,7 @@
             };
 
 
-            map(document.getElementById("map"), mapOptions);
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
           
 
@@ -308,10 +308,10 @@
             showVisibleMarkers(gmarkers);
 
         })
-        markerCluster(map,gmarkers,
-            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'}); 
-       
-
+   
+        var markerCluster = new MarkerClusterer(map, gmarkers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+        
 
 
 
