@@ -10,7 +10,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width",initial-scale="1" />
     <title>Index</title>
-    <style>#map {height : 525px ;width : 970px; position : absolute; left : 350px;top: 65px; border-radius : 10px}
+    <style>
+        
+  #map {
+      height : 525px ;width : 800px; position : absolute;
+      left : 230px;top: 65px; border-radius : 10px}
     
          
    body {           
@@ -19,7 +23,7 @@
 
     #date-info {position : absolute; top : 65px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 150px; width : 260px; border-radius : 10px;
+              height : 150px; width : 150px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
               font-size : 11px;
               padding : 10px;background-color:white;
@@ -39,7 +43,7 @@
             border-style: solid;
             border-color: black;
             height: 100px;
-            width: 260px;
+            width: 150px;
             border-radius: 10px;
             padding: 10px;
             background-color: white;
@@ -53,7 +57,7 @@
 
      #statistic {position : absolute; top : 375px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 20px; width : 260px; border-radius : 10px;padding : 10px;background-color :white;
+              height : 20px; width : 150px; border-radius : 10px;padding : 10px;background-color :white;
                font-family: 'Open Sans', sans-serif;
               font-size : 11px; 
 
@@ -61,7 +65,15 @@
 
     #infotext{position : absolute; top : 420px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 150px; width : 260px; border-radius : 10px;
+              height : 150px; width : 150px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 10px;background-color:white;
+    }
+
+    #chart {position : absolute; top : 65px;left : 1035px ;
+              border : 1px;border-style : solid; border-color : black;
+              height : 300px; width : 280px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
               font-size : 11px;
               padding : 10px;background-color:white;
@@ -106,12 +118,16 @@
 
    <div id="infotext"></div>
 
-                
+    <div id="chart">
+        <canvas id="mychart" width="400" height="400"></canvas>
+
+    </div> 
                    
         
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery-2.2.3.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/chart.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDe1iRGmDMXSwy0py_TRHruCp49TO0eyuU"></script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
@@ -128,15 +144,7 @@
         var vmarkers=[];
         var dateselect = document.getElementById("dateselect");
         var dateselected = dateselect.value;
-        
-       
-        var renderOptions = {suppressMarkers : true};
-
-        var directionsService = new google.maps.DirectionsService;
-        var directionsDisplay = new google.maps.DirectionsRenderer(renderOptions);
-        var directionmarkers = [];
-        var waypts = [];
-       
+           
 
        
         //data for dateselector
@@ -161,10 +169,7 @@
                 $("#dateselect").append("<option value=" + dayformat1 +">" +  dayformat1 + "</option>")
 
             };
-                   
-        
-
-          
+                
 
             $('#dateselect').on('change',function() {
 
@@ -188,8 +193,7 @@
                 showVisibleMarkers(vmarkers);
                 markerCluster.clearMarkers();
                 markerCluster.addMarkers(vmarkers);
-
-
+                
                         })
         
            
@@ -203,16 +207,13 @@
                 zoom: 14,
                 mapTypeId: google.maps.MapTypeId.HYBRID
             };
-
-
+            
             map = new google.maps.Map(document.getElementById("map"), mapOptions);
-
-          
+                     
 
             for (i = 0; i < markers.length; i++) {
                 addMarker(markers[i]);}
-
-           
+                       
 
             for (i = 0; i < markers.length; i++) {
                                   
@@ -237,8 +238,7 @@
 
         }
 
-       
-         
+                
         function addMarker(marker) {
 
             var category = moment(marker.HTQU_CreatedOn).format("DD/MM/YYYY");
@@ -312,8 +312,69 @@
         var markerCluster = new MarkerClusterer(map, gmarkers,
             {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
         
+        var countday = []
+        //code for chart
+
+        var daysformatted=[];
 
 
+        for (i=0;i<dayschron.length;i++) { 
+            
+            var counter = 0;
+            var datescan = moment(dayschron[i]).format("DD/MM/YYYY");
+            daysformatted.push(datescan);
+           
+            for (j=0; j<markers.length; j++) {
+
+                marker = gmarkers[j];
+                                    
+                if(marker.category == datescan) { counter=counter+1}
+
+            }
+            countday.push(counter);
+
+        }
+
+
+        var ctx = document.getElementById("mychart");
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels:daysformatted,
+                datasets: [{
+                    label: '# of Reads',
+                    data: countday,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+
+        
 
 
     </script>

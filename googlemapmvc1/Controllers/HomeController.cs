@@ -26,6 +26,7 @@ namespace googlemapmvc1.Controllers
             var listsByPatrolId = new List<List<Carread>>();
             var days = new List<DateTime>();
            
+           
 
 
 
@@ -41,7 +42,7 @@ namespace googlemapmvc1.Controllers
                 var fullList = connection.Query<Carread>("SELECT TOP 2000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
                 
-
+               
                 
 
                
@@ -52,12 +53,12 @@ namespace googlemapmvc1.Controllers
                                 orderby x.HTQU_PatrollerMOBI_ID
                                 select x.HTQU_PatrollerMOBI_ID).Distinct();
 
-
+                
                 var daytypes = (from x in returnFullList select x.HTQU_CreatedOn.Date).Distinct();
 
                 days = daytypes.ToList();
 
-                Debug.WriteLine("bart" + days.Count());
+               
 
                 carTypesGuidList = cartypes.ToList();
 
