@@ -236,26 +236,7 @@
                 addMarker(markers[i]);}
                        
 
-            for (i = 0; i < markers.length; i++) {
-                                  
-               
-                for (j=1;j< (markers.length-i);j++) {
-                    var pos = {lat : markers[i].HTQU_Latitude, lng : markers[i].HTQU_Longitude};
-
-                    var posnext =  {lat : markers[j].HTQU_Latitude, lng : markers[j].HTQU_Longitude};
-                   
-                    if (pos.equals(posnext)) {
-                        var a = 360.0 / markers.length;
-                        var newLat = pos.lat() +   (Math.random() -.5) / 1500;
-                        var newLng = pos.lng() +  (Math.random() -.5) / 1500;
-                        var latLng = new google.maps.LatLng(newLat,newLng);
-                    }
-
-
-                }
-
-              
-            };
+            
 
         }
 
@@ -330,8 +311,8 @@
 
         })
    
-        var markerCluster = new MarkerClusterer(map, gmarkers,
-            {imagePath: '~/App_Data/m'});
+        //var markerCluster = new MarkerClusterer(map, gmarkers,
+        //    {imagePath: '~/App_Data/m'});
         
         var countday = []
         //code for chart
