@@ -202,30 +202,27 @@
             };
                 
 
-            //$('#dateselect').on('change',function() {
+            $('#dateselect').on('change',function() {
 
-            //    dateselected = this.value;
-            //    vmarkers=[];
-
-            //    for (i=0; i<markers.length; i++) {
-
-            //        marker = gmarkers[i];
-                    
-                   
-            //        if( (moment(marker.HTQU_CreatedOn).format("DD/MM/YYYY"))== dateselected  || dateselected.length == 0  ) {
-            //            marker.setVisible(true);
-            //            vmarkers.push(marker);
-            //        }
-
-            //        else{ marker.setVisible(false);
-            //        }
-            //    }
-
-                //    showVisibleMarkers(vmarkers);
-                //    markerCluster.clearMarkers();
-                //    markerCluster.addMarkers(vmarkers);
+                dateselected = this.value;
                 
-                //            })
+
+                for (i=0; i<markers.length; i++) {
+
+                    marker = markers[i];
+                                       
+                    if( (moment(marker.HTQU_CreatedOn).format("DD/MM/YYYY"))== dateselected  || dateselected.length == 0  ) {
+                        addMarker(marker)
+                    }
+
+                    else{removeMarker(marker)}
+                        
+                        
+                    
+                }
+
+                    
+                            })
         
            
        
@@ -247,52 +244,77 @@
                        
              map.addLayer(clustermarkers);   
                       
-             function addMarker(gmarker) {
+             }
+        
+         function addMarker(gmarker) {
 
                    
-                 var pos = [gmarker.HTQU_Latitude,gmarker.HTQU_Longitude];
+             var pos = [gmarker.HTQU_Latitude,gmarker.HTQU_Longitude];
 
 
-                 var datetimestring = moment(gmarker.HTQU_CreatedOn).format("MMMM Do YYYY, h:mm:ss a");
+             var datetimestring = moment(gmarker.HTQU_CreatedOn).format("MMMM Do YYYY, h:mm:ss a");
 
-                 var title = datetimestring;
+             var title = datetimestring;
            
             
-                 var leafmarker = L.marker(pos).bindPopup(moment(dayschron[i]).format("DD/MM/YYYY"))
-                              .openPopup()
-                              .on('click',function(e){
+             var leafmarker = L.marker(pos).bindPopup(moment(dayschron[i]).format("DD/MM/YYYY"))
+                          .openPopup()
+                          .on('click',function(e){
 
-                                  var posstring = String(pos);
-                                  document.getElementById("infotext").innerHTML="<b>Data selected marker</b><br><br><u>Date and time : </u><br>"
-                                 + title + "<br><br> <u>Coordinates : </u><br>" + posstring.match(/[^()]+/)
+                              var posstring = String(pos);
+                              document.getElementById("infotext").innerHTML="<b>Data selected marker</b><br><br><u>Date and time : </u><br>"
+                             + title + "<br><br> <u>Coordinates : </u><br>" + posstring.match(/[^()]+/)
 
-                              });
+                          });
 
-                 clustermarkers.addLayer(leafmarker);
+             clustermarkers.addLayer(leafmarker);
                           
-             }}
+         };
 
-                    //gmarkers.push(marker);
+         function removeMarker(gmarker) {
+
+                   
+             var pos = [gmarker.HTQU_Latitude,gmarker.HTQU_Longitude];
+
+
+             var datetimestring = moment(gmarker.HTQU_CreatedOn).format("MMMM Do YYYY, h:mm:ss a");
+
+             var title = datetimestring;
+           
+            
+             var leafmarker = L.marker(pos).bindPopup(moment(dayschron[i]).format("DD/MM/YYYY"))
+                          .openPopup()
+                          .on('click',function(e){
+
+                              var posstring = String(pos);
+                              document.getElementById("infotext").innerHTML="<b>Data selected marker</b><br><br><u>Date and time : </u><br>"
+                             + title + "<br><br> <u>Coordinates : </u><br>" + posstring.match(/[^()]+/)
+
+                          });
+
+             clustermarkers.removeLayer(leafmarker);
+                          
+         }; 
                     
                 
-                    //    function showVisibleMarkers(fmarkers) {
+         //function showVisibleMarkers(fmarkers) {
 
-                    //        map.on('moveend',function() {
-                    //            var bounds = map.getBounds();
-                    //            count = 0;
+         //    map.on('moveend',function() {
 
-                    //            for (var i=0; i< fmarkers.length;i++) {
+         //         var bounds = map.getBounds();
+         //         count = 0;
+         //         for (var i=0; i< fmarkers.length;i++) {
 
-                    //                var marker = fmarkers[i];
-                    //                if(bounds.contains(marker.getLatLng())===true) 
-                    //                    count++
+         //           var marker = fmarkers[i];
+         //           if(bounds.contains(marker.getLatLng())===true) 
+         //           count++
 
-                    //            }
+         //                       }
 
-                    //        });
+         //                   });
                                    
-                    //        $("#statistic").html(count + " reads in actual zoom");
-                    //    }
+         //                   $("#statistic").html(count + " reads in actual zoom");
+         //               }
 
         
 
@@ -316,7 +338,7 @@
            
                         for (j=0; j<markers.length; j++) {
 
-                            marker = gmarkers[j];
+                            marker = markers[j];
                                     
                             if(moment(marker.HTQU_CreatedOn).format("DD/MM/YYYY") == datescan) { counter=counter+1}
 
