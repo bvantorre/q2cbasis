@@ -38,7 +38,7 @@ namespace googlemapmvc1.Controllers
                 connection.Open();
 
                 //Get vehcile list
-                var fullList = connection.Query<Carread>("SELECT TOP 2000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
+                var fullList = connection.Query<Carread>("SELECT TOP 8000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
                 
 
@@ -57,7 +57,6 @@ namespace googlemapmvc1.Controllers
 
                 days = daytypes.ToList();
 
-                Debug.WriteLine("bart" + days.Count());
 
                 carTypesGuidList = cartypes.ToList();
 
@@ -84,9 +83,9 @@ namespace googlemapmvc1.Controllers
             string patrollistjson = serializer.Serialize(carTypesGuidList);
             string daysjson = serializer.Serialize(days);
 
-            ViewBag.Jsonlist = jsonlist;
-            ViewBag.Patrollistjson = patrollistjson;
-            ViewBag.Daysjson = daysjson;
+            ViewBag.Jsonlist = jsonlist; 
+           
+            ViewBag.Daysjson = days;
 
             return View();
 
