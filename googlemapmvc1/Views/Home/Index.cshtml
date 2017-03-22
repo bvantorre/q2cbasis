@@ -163,9 +163,10 @@
                 
                    
         
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/chart.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDe1iRGmDMXSwy0py_TRHruCp49TO0eyuU"></script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
@@ -186,11 +187,7 @@
        
         var renderOptions = {suppressMarkers : true};
 
-        var directionsService = new google.maps.DirectionsService;
-        var directionsDisplay = new google.maps.DirectionsRenderer(renderOptions);
-        var directionmarkers = [];
-        var waypts = [];
-       
+      
 
        
         //data for dateselector
@@ -259,7 +256,7 @@
             };
 
 
-            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            map = new google.maps.Map(document.getElementById("mapid"), mapOptions);
 
           
 
@@ -367,6 +364,163 @@
             {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
         
 
+        var countday = []
+        var daysformatted=[];
+
+
+        for (i=0;i<dayschron.length;i++) { 
+            
+            var counter = 0;
+            var datescan = moment(dayschron[i]).format("DD/MM/YYYY");
+            daysformatted.push(datescan);
+           
+            for (j=0; j<markers.length; j++) {
+
+                marker = markers[j];
+                                    
+                if(moment(marker.HTQU_CreatedOn).format("DD/MM/YYYY") == datescan) { counter=counter+1}
+
+            }
+            countday.push(counter);
+
+        };
+
+        // code for chart
+        var ctx = document.getElementById("mychart");
+        var myChart = new Chart
+              (ctx, {
+                  type: 'bar',
+                  data: {
+                      labels:daysformatted,
+                      datasets: [{
+                          label: '# of Reads',
+                          data: countday,
+                          backgroundColor: [
+                                           'rgba(255, 99, 132, 0.2)',
+                                           'rgba(54, 162, 235, 0.2)',
+                                           'rgba(255, 206, 86, 0.2)',
+                                           'rgba(75, 192, 192, 0.2)',
+                                           'rgba(153, 102, 255, 0.2)',
+                                           'rgba(255, 159, 64, 0.2)',
+                                           'rgba(255, 99, 132, 0.2)',
+                                           'rgba(54, 162, 235, 0.2)',
+                                           'rgba(255, 206, 86, 0.2)',
+                                           'rgba(75, 192, 192, 0.2)',
+                                           'rgba(153, 102, 255, 0.2)',
+                                           'rgba(255, 99, 132, 0.2)',
+                                           'rgba(54, 162, 235, 0.2)',
+                                           'rgba(255, 206, 86, 0.2)',
+                                           'rgba(75, 192, 192, 0.2)',
+                                           'rgba(153, 102, 255, 0.2)',
+                                           'rgba(255, 159, 64, 0.2)',
+                                           'rgba(255, 99, 132, 0.2)',
+                                           'rgba(54, 162, 235, 0.2)',
+                                           'rgba(255, 206, 86, 0.2)',
+                                           'rgba(75, 192, 192, 0.2)',
+                                           'rgba(153, 102, 255, 0.2)',
+                          ],
+                          borderColor: [
+                              'rgba(255,99,132,1)',
+                              'rgba(54, 162, 235, 1)',
+                              'rgba(255, 206, 86, 1)',
+                              'rgba(75, 192, 192, 1)',
+                              'rgba(153, 102, 255, 1)',
+                              'rgba(255, 159, 64, 1)',
+                              'rgba(255,99,132,1)',
+                              'rgba(54, 162, 235, 1)',
+                              'rgba(255, 206, 86, 1)',
+                              'rgba(75, 192, 192, 1)',
+                              'rgba(153, 102, 255, 1)',
+                              'rgba(255,99,132,1)',
+                              'rgba(54, 162, 235, 1)',
+                              'rgba(255, 206, 86, 1)',
+                              'rgba(75, 192, 192, 1)',
+                              'rgba(153, 102, 255, 1)',
+                              'rgba(255, 159, 64, 1)',
+                              'rgba(255,99,132,1)',
+                              'rgba(54, 162, 235, 1)',
+                              'rgba(255, 206, 86, 1)',
+                              'rgba(75, 192, 192, 1)',
+                              'rgba(153, 102, 255, 1)',
+                          ],
+                          borderWidth: 1
+                      }]
+                  },
+                  options:{    title : {display : true, text : "% reads by weekday",padding : 2},
+                      legend :{labels :{ fontSize : 10}},
+                      scales: { xAxes : [{ticks : {fontSize : 10}}], //size of labes x-axe
+                          yAxes: [{
+                              ticks: {fontSize : 10,
+                                  beginAtZero:true
+                              }
+                          }]
+                            
+                      }          
+                  }
+                        
+              })
+
+
+    
+        //code for chart data analyse by "day of the week"
+        var dow = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] 
+        var countdayoftheweek = [];
+        for (i=0;i<7;i++) { 
+            
+            var weekdag = dow[i];
+            var counter=0; 
+                
+            for (j=0; j<markers.length; j++) {
+           
+                marker = markers[j];
+                                    
+                if (moment(marker.HTQU_CreatedOn).format('dddd')==weekdag) { counter=counter+1}
+
+            }
+            dayperc = ((counter/markers.length)*100).toFixed(1);
+            countdayoftheweek.push(dayperc);
+
+        };
+        
+        var canvas = document.getElementById("mypiechart")
+        var ctx = canvas.getContext("2d");
+
+
+        var mypieChart = new Chart (ctx, {
+            type : 'pie',
+            data : {
+                labels : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+                datasets : [{
+                    backgroundColor: [
+                    "#2ecc71",
+                    "#3498db",
+                    "#95a5a6",
+                    "#9b59b6",
+                    "#f1c40f",
+                    "#e74c3c",
+                    "#34495e"
+                    ],
+                    label : "percentage",
+                    data : countdayoftheweek
+                }]
+            },options : { responsive :true,maintainAspectRatio : false,
+                title : {display : true, text : "% reads by weekday",padding : 2},legend :{labels :{ boxWidth: 20}},
+                tooltips :{ callbacks: {
+                    label: function(tooltipItem, data) {
+                        var allData = data.datasets[tooltipItem.datasetIndex].data;
+                        var tooltipLabel = data.labels[tooltipItem.index];
+                        var tooltipData = allData[tooltipItem.index];
+               
+                        return tooltipLabel + ': ' + tooltipData +  '%';
+                    }
+                }}
+
+
+            }}) ;    
+
+ 
+ 
+ 
 
 
 
