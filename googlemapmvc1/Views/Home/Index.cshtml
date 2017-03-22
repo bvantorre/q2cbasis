@@ -10,7 +10,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width",initial-scale="1" />
     <title>Index</title>
-    <style>#map {height : 525px ;width : 970px; position : absolute; left : 350px;top: 65px; border-radius : 10px}
+    <style>
+   #mapid {
+      height : 525px ;width : 800px; position : absolute;
+      left : 230px;top: 65px; }
     
          
    body {           
@@ -19,16 +22,35 @@
 
     #date-info {position : absolute; top : 65px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 150px; width : 260px; border-radius : 10px;
+              height : 150px; width : 170px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
-              font-size : 11px;
-              padding : 10px;background-color:white;
+              font-size : 12px;
+              padding : 6px 1px;background-color:white;
+             
+        
+           
     }
 
-    #dateselect,#datetitle { font-family: 'Open Sans', sans-serif;
+
+    #date-info-content {overflow : auto;border-radius :8px;
+                        height : 150px; width : 170px; 
+
+
+
+    }
+   
+
+    #datetitle{ font-family: 'Open Sans', sans-serif;
               font-size : 11px;
-              padding : 12px;background-color:white;
-              margin : 2px;
+              background-color:white;
+           
+    }
+
+
+    #dateselect { font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 0px;background-color:white;
+              margin : 0px;
     }
 
   #dateselector {
@@ -39,7 +61,7 @@
             border-style: solid;
             border-color: black;
             height: 100px;
-            width: 260px;
+            width: 150px;
             border-radius: 10px;
             padding: 10px;
             background-color: white;
@@ -53,42 +75,62 @@
 
      #statistic {position : absolute; top : 375px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 20px; width : 260px; border-radius : 10px;padding : 10px;background-color :white;
+              height : 20px; width : 150px; border-radius : 10px;padding : 10px;background-color :white;
                font-family: 'Open Sans', sans-serif;
               font-size : 11px; 
 
     }
 
-    #infotext{position : absolute; top : 420px;left : 50px ;
+    #infotext{position : absolute; top : 380px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 150px; width : 260px; border-radius : 10px;
+              height : 190px; width : 150px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
               font-size : 11px;
               padding : 10px;background-color:white;
     }
+
+    #chart {position : absolute; top : 65px;left : 1035px ;
+              border : 1px;border-style : solid; border-color : black;
+              height : 260px; width : 280px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              font-size : 9px;
+              padding : 10px;background-color:white;
+    }
+    #piechart {position : absolute; top : 350px;left : 1035px ;
+              border : 1px;border-style : solid; border-color : black;
+              height : 220px; width : 280px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 10px;background-color:white;
+
+
+    }
     select { border-radius : 10px}
-   
-   
-          
+   ul {
+  list-style-type: none;
+}
+
    
     
     </style>
 </head>
 <body>
-    <ul style="overflow : auto">
-       <li><img src="http://www.q2c.be/Content/Images/q2c-logo-neg.png" alt="test" style="width : 62px; height: 20px;"></li>
+    <ul>
+        <li><img src="http://www.q2c.be/Content/Images/q2c-logo-neg.png" alt="test" style="width : 62px; height: 20px;"></li>
     </ul>
 
 
- 
-
-   <div id="map"></div>
 
 
-   
+    <div id="mapid"></div>
+
+
+
     <div id="date-info">
-    <h1 id="datetitle">Scan days</h1>
-    <ul id="dates-list"></ul>
+        <div id="date-info-content">
+            <h1 id="datetitle">Scan days</h1>
+            <ul id="dates-list"></ul>
+        </div>
     </div>
 
     <div id=dateselector>
@@ -102,9 +144,21 @@
 
 
 
-   <div id="statistic"></div>
 
-   <div id="infotext"></div>
+
+    <div id="infotext"></div>
+
+    <div id="chart">
+        <canvas id="mychart" width="400" height="400"></canvas>
+
+    </div>
+
+    <div id="piechart">
+        <canvas id="mypiechart"></canvas>
+
+
+
+    </div>
 
                 
                    
