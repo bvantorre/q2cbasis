@@ -183,7 +183,7 @@
         var vmarkers=[];
         var dateselect = document.getElementById("dateselect");
         var dateselected = dateselect.value;
-        
+        var map,heatmap;
        
         var renderOptions = {suppressMarkers : true};
 
@@ -361,7 +361,7 @@
         })
    
         var markerCluster = new MarkerClusterer(map, gmarkers,
-            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'},{maxZoom: 18})
         
 
         var countday = []
