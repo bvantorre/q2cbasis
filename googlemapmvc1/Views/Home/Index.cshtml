@@ -201,39 +201,40 @@
                 var datetext = document.createTextNode( dayformatted);
                 datenode.appendChild(datetext);
                 document.getElementById("dates-list").appendChild(datenode);
-            
-
+           
             };
             
-
+        //selection menu to filter by scanday
             for (i=0;i<dayschron.length;i++) {
                 var dayformat1 = moment(dayschron[i]).format("DD/MM/YYYY");
                 console.log(dayformat1)
                 $("#dateselect").append("<option value=" + dayformat1 +">" +  dayformat1 + "</option>")
 
             };
-                   
-        
-
-          
+           
 
             $('#dateselect').on('change',function() {
 
-                dateselected = this.value;
-                vmarkers=[];
+               filtermarkersby(dateselect)
 
+                        })
+        
+        //function to filter markers on parameter
+
+            function filtermarkersby(selection) { 
+                selection = this.value;
                 for (i=0; i<markers.length; i++) {
 
                     marker = gmarkers[i];
                     
                    
-                    if(marker.category == dateselected  || dateselected.length == 0  ) {
+                    if(marker.category == selection || selection.length == 0  ) {
                         marker.setVisible(true);
                         vmarkers.push(marker);
                     }
 
-                                else{ marker.setVisible(false);
-                                }
+                    else{ marker.setVisible(false);
+                    }
                 }
 
                 showVisibleMarkers(vmarkers);
@@ -241,9 +242,10 @@
                 markerCluster.addMarkers(vmarkers);
 
 
-                        })
-        
-           
+            };
+
+
+
        
         //make map and add marker 
         function makemap()
