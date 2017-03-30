@@ -39,7 +39,7 @@ namespace googlemapmvc1.Controllers
                 connection.Open();
 
                 //Get vehcile list
-                var fullList = connection.Query<Carread>("SELECT TOP 8000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
+                var fullList = connection.Query<Carread>("SELECT TOP 1000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
                 
                
