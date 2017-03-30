@@ -17,6 +17,16 @@ namespace googlemapmvc1.Models
             public string Vehicle { get; set; }
         }
 
+        public class Controles
+
+        {
+
+            public int LHDT_TypeControle { get; set; }
+            public Guid LPHS_ID { get; set; }
+            public DateTime LPHS_CreatedOn { get; set; }
+            public double LPHS_Latitude { get; set; }
+            public double LPHS_Longitude { get; set; }
+        }
 
 
         public class Patrollermodel

@@ -99,6 +99,15 @@
     }
     select { border-radius : 10px}
    
+    #piechart {position : absolute; top : 390px;left : 1035px ;
+              border : 1px;border-style : solid; border-color : black;
+              height : 220px; width : 280px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 10px;background-color:white;
+
+
+    }
    
           
    
@@ -143,6 +152,12 @@
         <canvas id="mychart" width="400" height="400"></canvas>
 
     </div> 
+    <div id="piechart">
+        <canvas id="mypiechart"></canvas>
+
+
+
+    </div>             
                    
         
     <script src="~/Scripts/jquery-2.2.3.min.js"></script>
@@ -427,7 +442,64 @@
             }
         });
 
+        //code for chart data analyse by "day of the week"
+        var dow = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] 
+        var countdayoftheweek = [];
+        for (i=0;i<7;i++) { 
+            
+            var weekdag = dow[i];
+            var counter=0; 
+                
+            for (j=0; j<markers.length; j++) {
+           
+                marker = markers[j];
+                                    
+                if (moment(marker.HTQU_CreatedOn).format('dddd')==weekdag) { counter=counter+1}
+
+            }
+            dayperc = ((counter/markers.length)*100).toFixed(1);
+            countdayoftheweek.push(dayperc);
+
+        };
         
+        var canvas = document.getElementById("mypiechart")
+        var ctx = canvas.getContext("2d");
+
+
+        var mypieChart = new Chart (ctx, {
+            type : 'pie',
+            data : {
+                labels : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+                datasets : [{
+                    backgroundColor: [
+                    "#2ecc71",
+                    "#3498db",
+                    "#95a5a6",
+                    "#9b59b6",
+                    "#f1c40f",
+                    "#e74c3c",
+                    "#34495e"
+                    ],
+                    label : "percentage",
+                    data : countdayoftheweek
+                }]
+            },options : { responsive :true,maintainAspectRatio : false,
+                title : {display : true, text : "% reads by weekday",padding : 2},legend :{labels :{ boxWidth: 20}},
+                tooltips :{ callbacks: {
+                    label: function(tooltipItem, data) {
+                        var allData = data.datasets[tooltipItem.datasetIndex].data;
+                        var tooltipLabel = data.labels[tooltipItem.index];
+                        var tooltipData = allData[tooltipItem.index];
+               
+                        return tooltipLabel + ': ' + tooltipData +  '%';
+                    }
+                }}
+
+
+            }}) ;             
+
+
+
 
 
     </script>

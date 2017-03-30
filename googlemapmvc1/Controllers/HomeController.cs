@@ -7,6 +7,8 @@ using static googlemapmvc1.Models.Bigcarmodel;
 using System.Data.SqlClient;
 using Dapper;
 using System.Diagnostics;
+using System.IO;
+
 
 
 namespace googlemapmvc1.Controllers
@@ -17,17 +19,18 @@ namespace googlemapmvc1.Controllers
         public ActionResult Index()
         {
            
-            IEnumerable<Carread> carList1 = null;
-            IEnumerable<Carread> carList2 = null;
            
+            
             var returnFullList = new List<Carread>();
+            var returnstatlist = new List<Controles>();
+           
             var returnPatrollist = new List<Patrollermodel>();
             var carTypesGuidList = new List<Guid>();
             var listsByPatrolId = new List<List<Carread>>();
             var days = new List<DateTime>();
-           
-           
 
+
+            string sqlstring = System.IO.File.ReadAllText(@"C:\Users\vanto\Downloads\sqlquerystat.sql");
 
 
 
@@ -39,14 +42,19 @@ namespace googlemapmvc1.Controllers
                 connection.Open();
 
                 //Get vehcile list
-                var fullList = connection.Query<Carread>("SELECT TOP 1000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
+               var fullList = connection.Query<Carread>("SELECT TOP 1000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
-                
-               
-                
 
+                var statlist = connection.Query<Controles>(sqlstring);
+                Debug.WriteLine(statlist.Count());
+                var teststatlist = statlist.Take(1000);
+                returnstatlist = teststatlist.ToList();
                
-                returnFullList=fullList.ToList();
+
+
+
+
+                returnFullList = fullList.ToList();
                
 
                 var cartypes = (from x in returnFullList
@@ -84,10 +92,11 @@ namespace googlemapmvc1.Controllers
             string jsonlist = serializer.Serialize(returnFullList);
             string patrollistjson = serializer.Serialize(carTypesGuidList);
             string daysjson = serializer.Serialize(days);
-
+            string statlistjson = serializer.Serialize(returnstatlist);
             ViewBag.Jsonlist = jsonlist;
             ViewBag.Patrollistjson = patrollistjson;
             ViewBag.Daysjson = daysjson;
+            ViewBag.Statlistjson = statlistjson;
 
             return View();
 
