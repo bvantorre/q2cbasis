@@ -48,9 +48,8 @@ namespace googlemapmvc1.Controllers
 
                 var statlist = connection.Query<Controles>(sqlstring);
                 Debug.WriteLine(statlist.Count());
-                var teststatlist = statlist.Take(1000);
-                returnstatlist = teststatlist.ToList();
-               
+                returnstatlist = statlist.ToList();
+                Debug.WriteLine("bart"+returnstatlist[5].typecontrole);
 
 
 
@@ -70,11 +69,13 @@ namespace googlemapmvc1.Controllers
                 //daytypes for lphs
                 var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
                 lphsdays = lphsdaytypes.ToList();
-
+                Debug.WriteLine("lphsdaytypes.count()" + lphsdays.Count());
                 //list of different scantypes (e.g. abonnement,parkingmonitor,parkeon,sms,..)
-                var LHDT_TypeControleDis = (from x in returnstatlist select x.LHDT_TypeControle).Distinct();
-                typecontrols = LHDT_TypeControleDis.ToList();
 
+
+                var TypeControle = (from x in returnstatlist select x.LHDT_TypeControle).Distinct();
+                typecontrols = TypeControle.ToList();
+                Debug.WriteLine("bart" + typecontrols.Count());
 
 
 
@@ -98,6 +99,7 @@ namespace googlemapmvc1.Controllers
             }
 
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            serializer.MaxJsonLength = Int32.MaxValue;
             string jsonlist = serializer.Serialize(returnFullList);
             string patrollistjson = serializer.Serialize(carTypesGuidList);
             string daysjson = serializer.Serialize(days);

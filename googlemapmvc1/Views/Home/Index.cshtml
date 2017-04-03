@@ -69,30 +69,18 @@
         }
 
 
-
-    
-
-     #statistic {position : absolute; top : 375px;left : 50px ;
-              border : 1px;border-style : solid; border-color : black;
-              height : 20px; width : 150px; border-radius : 10px;padding : 10px;background-color :white;
-               font-family: 'Open Sans', sans-serif;
-              font-size : 11px; 
-
-    }
-
-    #infotext{position : absolute; top : 420px;left : 50px ;
-              border : 1px;border-style : solid; border-color : black;
-              height : 150px; width : 150px; border-radius : 10px;
-              font-family: 'Open Sans', sans-serif;
-              font-size : 11px;
-              padding : 10px;background-color:white;
-    }
-
-    
     
     select { border-radius : 10px}
    
-  
+  #piechart {position : absolute; top : 65px;left : 400px ;
+              border : 1px;border-style : solid; border-color : black;
+              height : 500px; width : 500px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 10px;background-color:white;
+
+
+    }
 
    
           
@@ -162,7 +150,7 @@
         var dayschron = days.reverse();
 
         //data for chart type of scans
-        var datascantype = @Html.Raw(ViewBag.Statlistjson);
+        var listlphsids = @Html.Raw(ViewBag.Statlistjson);
         var lphsdays =  @Html.Raw(ViewBag.Lphsdaysjson);
         var lphsdayschron = lphsdays.reverse();
         var typecontrols = @Html.Raw(ViewBag.Typecontrolsjson);
@@ -175,14 +163,16 @@
         var dateselected = dateselect.value;
 
         
+        var dicttypecontrol = {
 
+        0 :'Parking Monitor',1 :'Uurrooster', 2: 'SMS', 3: 'Abonnement', 
+			5: 'Tweede RB',7: 'Bevroren Nummerplaat', 20: 'Sensibilisering', 100: 'YellowBrick', 110: 'PayByPhone',
+			120: 'Parkeon', 130: 'Mobigo', 140: 'Presto', 150: 'MobileFor', 160: 'ParkMobile', 170: 'Extenso',
+			180: 'CEVI', 190: 'Hectronic', 200: 'Parkare', 999: 'TOTAAL'
 
+        }
 
-
-
-
-
-
+        console.log(dicttypecontrol[0])
 
 
         //data for dateselector
@@ -209,99 +199,36 @@
             };
 
 
-
-            var countday = []
-            var daysformatted=[];
-
-
-        var ctx = document.getElementById("mychart");
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels:daysformatted,
-                datasets: [{
-                    label: '# of Reads',
-                    data: countday,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero:true
-                        }
-                    }]
-                }
-            }
-        });
-
+            console.log(typecontrols.length);
+            console.log(listlphsids.length);
         
-       var counttypecontrol =[]
-        for (i=0;i<typecontrols.length;i++){
+            var counttypecontrol =[];
+            var labelsoftypecontrols =[];
 
-            for (j=0;j<datascantype.length;j++) {
-                            
+           for (i=0;i<typecontrols.length;i++) {
+
+               var check = typecontrols[i];
+               var label = dicttypecontrol[check];
                 var counter=0;
-
-                if (datascantype[j].LHDT_TypeControle == typecontrols[i]) {
+                for (j=0;j<listlphsids.length;j++){
+                    if (listlphsids[j].LHDT_TypeControle==check ) {
 
                     counter= counter+1}
-
-            }    
-
-            dayperc = ((counter/typecontrols.length)*100).toFixed(1);
-            counttypecontrol.push(dayperc);
+                   
+                } 
+                var typeperc = ((counter/listlphsids.length)*100).toFixed(2);
+                counttypecontrol.push(typeperc);
+                labelsoftypecontrols.push(label);
+            
 
         };
+         
+         
+        
+
+          
+        
+
 
         var canvas = document.getElementById("mypiechart")
         var ctx = canvas.getContext("2d");
@@ -310,7 +237,7 @@
         var mypieChart = new Chart (ctx, {
             type : 'pie',
             data : {
-                labels :typecontrols,
+                labels :labelsoftypecontrols,
                 datasets : [{
                     backgroundColor: [
                     "#2ecc71",
@@ -325,7 +252,7 @@
                     data : counttypecontrol
                 }]
             },options : { responsive :true,maintainAspectRatio : false,
-                title : {display : true, text : "% reads by weekday",padding : 2},legend :{labels :{ boxWidth: 20}},
+                title : {display : true, text : "% type control",padding : 2},legend :{labels :{ boxWidth: 20}},
                 tooltips :{ callbacks: {
                     label: function(tooltipItem, data) {
                         var allData = data.datasets[tooltipItem.datasetIndex].data;
