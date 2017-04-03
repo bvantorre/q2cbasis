@@ -28,7 +28,8 @@ namespace googlemapmvc1.Controllers
             var carTypesGuidList = new List<Guid>();
             var listsByPatrolId = new List<List<Carread>>();
             var days = new List<DateTime>();
-
+            var lphsdays = new List<DateTime>();
+            var typecontrols = new List<int>();
 
             string sqlstring = System.IO.File.ReadAllText(@"C:\Users\vanto\Downloads\sqlquerystat.sql");
 
@@ -42,7 +43,7 @@ namespace googlemapmvc1.Controllers
                 connection.Open();
 
                 //Get vehcile list
-               var fullList = connection.Query<Carread>("SELECT TOP 1000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
+               var fullList = connection.Query<Carread>("SELECT TOP 4000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
 
                 var statlist = connection.Query<Controles>(sqlstring);
@@ -63,15 +64,23 @@ namespace googlemapmvc1.Controllers
 
                 
                 var daytypes = (from x in returnFullList select x.HTQU_CreatedOn.Date).Distinct();
-
                 days = daytypes.ToList();
 
-               
 
+                //daytypes for lphs
+                var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
+                lphsdays = lphsdaytypes.ToList();
+
+                //list of different scantypes (e.g. abonnement,parkingmonitor,parkeon,sms,..)
+                var LHDT_TypeControleDis = (from x in returnstatlist select x.LHDT_TypeControle).Distinct();
+                typecontrols = LHDT_TypeControleDis.ToList();
+
+
+
+
+
+                //if more than one scancar
                 carTypesGuidList = cartypes.ToList();
-
-                
-                               
 
                 listsByPatrolId = returnFullList.
                     GroupBy(x => x.HTQU_PatrollerMOBI_ID).Select(g => g.ToList()).ToList();
@@ -93,10 +102,16 @@ namespace googlemapmvc1.Controllers
             string patrollistjson = serializer.Serialize(carTypesGuidList);
             string daysjson = serializer.Serialize(days);
             string statlistjson = serializer.Serialize(returnstatlist);
+            string lphsdaysjson = serializer.Serialize(lphsdays);
+            string typecontrolsjson = serializer.Serialize(typecontrols);
+
             ViewBag.Jsonlist = jsonlist;
             ViewBag.Patrollistjson = patrollistjson;
             ViewBag.Daysjson = daysjson;
+
             ViewBag.Statlistjson = statlistjson;
+            ViewBag.Lphsdaysjson = lphsdaysjson;
+            ViewBag.Typecontrolsjson = typecontrolsjson;
 
             return View();
 

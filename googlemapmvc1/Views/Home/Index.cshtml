@@ -88,24 +88,12 @@
               padding : 10px;background-color:white;
     }
 
-    #chart {position : absolute; top : 65px;left : 1035px ;
-              border : 1px;border-style : solid; border-color : black;
-              height : 300px; width : 280px; border-radius : 10px;
-              font-family: 'Open Sans', sans-serif;
-              font-size : 11px;
-              padding : 10px;background-color:white;
-    }
+    
+    
     select { border-radius : 10px}
    
-    #piechart {position : absolute; top : 390px;left : 1035px ;
-              border : 1px;border-style : solid; border-color : black;
-              height : 220px; width : 280px; border-radius : 10px;
-              font-family: 'Open Sans', sans-serif;
-              font-size : 11px;
-              padding : 10px;background-color:white;
+  
 
-
-    }
    
           
    
@@ -172,19 +160,35 @@
         var patrollers =@Html.Raw(ViewBag.Patrollistjson);
         var days = @Html.Raw(ViewBag.Daysjson);
         var dayschron = days.reverse();
+
+        //data for chart type of scans
+        var datascantype = @Html.Raw(ViewBag.Statlistjson);
+        var lphsdays =  @Html.Raw(ViewBag.Lphsdaysjson);
+        var lphsdayschron = lphsdays.reverse();
+        var typecontrols = @Html.Raw(ViewBag.Typecontrolsjson);
+        //
+
         var colors = ["red","blue","yellow","green","orange"];
-        var infowindow = new google.maps.InfoWindow();
         var gmarkers = [];
         var vmarkers=[];
         var dateselect = document.getElementById("dateselect");
         var dateselected = dateselect.value;
-           
 
-       
-        //data for dateselector
-                     
-            document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
         
+
+
+
+
+
+
+
+
+
+
+        //data for dateselector
+
+            document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
+
             for (i=0;i<dayschron.length;i++) {
 
                 var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
@@ -192,10 +196,10 @@
                 var datetext = document.createTextNode( dayformatted);
                 datenode.appendChild(datetext);
                 document.getElementById("dates-list").appendChild(datenode);
-            
+
 
             };
-            
+
 
             for (i=0;i<dayschron.length;i++) {
                 var dayformat1 = moment(dayschron[i]).format("DD/MM/YYYY");
@@ -203,10 +207,11 @@
                 $("#dateselect").append("<option value=" + dayformat1 +">" +  dayformat1 + "</option>")
 
             };
-                
 
-       
-          
+
+
+            var countday = []
+            var daysformatted=[];
 
 
         var ctx = document.getElementById("mychart");
@@ -279,26 +284,25 @@
             }
         });
 
-        //code for chart data analyse by "day of the week"
-        var dow = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] 
-        var countdayoftheweek = [];
-        for (i=0;i<7;i++) { 
-            
-            var weekdag = dow[i];
-            var counter=0; 
-                
-            for (j=0; j<markers.length; j++) {
-           
-                marker = markers[j];
-                                    
-                if (moment(marker.HTQU_CreatedOn).format('dddd')==weekdag) { counter=counter+1}
+        
+       var counttypecontrol =[]
+        for (i=0;i<typecontrols.length;i++){
 
-            }
-            dayperc = ((counter/markers.length)*100).toFixed(1);
-            countdayoftheweek.push(dayperc);
+            for (j=0;j<datascantype.length;j++) {
+                            
+                var counter=0;
+
+                if (datascantype[j].LHDT_TypeControle == typecontrols[i]) {
+
+                    counter= counter+1}
+
+            }    
+
+            dayperc = ((counter/typecontrols.length)*100).toFixed(1);
+            counttypecontrol.push(dayperc);
 
         };
-        
+
         var canvas = document.getElementById("mypiechart")
         var ctx = canvas.getContext("2d");
 
@@ -306,7 +310,7 @@
         var mypieChart = new Chart (ctx, {
             type : 'pie',
             data : {
-                labels : ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+                labels :typecontrols,
                 datasets : [{
                     backgroundColor: [
                     "#2ecc71",
@@ -318,7 +322,7 @@
                     "#34495e"
                     ],
                     label : "percentage",
-                    data : countdayoftheweek
+                    data : counttypecontrol
                 }]
             },options : { responsive :true,maintainAspectRatio : false,
                 title : {display : true, text : "% reads by weekday",padding : 2},legend :{labels :{ boxWidth: 20}},
@@ -327,13 +331,13 @@
                         var allData = data.datasets[tooltipItem.datasetIndex].data;
                         var tooltipLabel = data.labels[tooltipItem.index];
                         var tooltipData = allData[tooltipItem.index];
-               
+
                         return tooltipLabel + ': ' + tooltipData +  '%';
                     }
                 }}
 
 
-            }}) ;             
+            }}) ;
 
 
 
