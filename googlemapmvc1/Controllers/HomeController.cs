@@ -23,6 +23,8 @@ namespace googlemapmvc1.Controllers
             
             var returnFullList = new List<Carread>();
             var returnstatlist = new List<Controles>();
+            var returntypehits = new List<Typehits>();
+           
            
             var returnPatrollist = new List<Patrollermodel>();
             var carTypesGuidList = new List<Guid>();
@@ -32,10 +34,10 @@ namespace googlemapmvc1.Controllers
             var typecontrols = new List<int>();
 
             string sqlstring = System.IO.File.ReadAllText(@"C:\Users\vanto\Downloads\sqlquerystat.sql");
+            string typehitsquery = System.IO.File.ReadAllText(@"C:\Users\vanto\Downloads\typehitsquery.sql");
 
 
-
-                 string connectionString = "data source=ikt4ztoj17.database.windows.net;initial catalog=Q2CCloudMobile_OPC;user id=SQLAdmin;password=Q2C_141500";
+            string connectionString = "data source=ikt4ztoj17.database.windows.net;initial catalog=Q2CCloudMobile_OPC;user id=SQLAdmin;password=Q2C_141500";
             SqlConnection connection = new SqlConnection(connectionString);
             try
             {
@@ -46,10 +48,16 @@ namespace googlemapmvc1.Controllers
                var fullList = connection.Query<Carread>("SELECT TOP 4000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
 
-                var statlist = connection.Query<Controles>(sqlstring);
-                Debug.WriteLine(statlist.Count());
-                returnstatlist = statlist.ToList();
-                Debug.WriteLine("bart"+returnstatlist[5].typecontrole);
+               var statlist = connection.Query<Controles>(sqlstring);
+
+                var typehits = connection.Query<Typehits>(typehitsquery);
+
+
+
+                var returntypehitsdev = typehits.Take(10000);
+
+                returntypehits = returntypehitsdev.ToList();
+               
 
 
 
@@ -69,14 +77,13 @@ namespace googlemapmvc1.Controllers
                 //daytypes for lphs
                 var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
                 lphsdays = lphsdaytypes.ToList();
-                Debug.WriteLine("lphsdaytypes.count()" + lphsdays.Count());
+               
                 //list of different scantypes (e.g. abonnement,parkingmonitor,parkeon,sms,..)
 
 
                 var TypeControle = (from x in returnstatlist select x.LHDT_TypeControle).Distinct();
                 typecontrols = TypeControle.ToList();
-                Debug.WriteLine("bart" + typecontrols.Count());
-
+               
 
 
 
@@ -103,9 +110,12 @@ namespace googlemapmvc1.Controllers
             string jsonlist = serializer.Serialize(returnFullList);
             string patrollistjson = serializer.Serialize(carTypesGuidList);
             string daysjson = serializer.Serialize(days);
+
             string statlistjson = serializer.Serialize(returnstatlist);
             string lphsdaysjson = serializer.Serialize(lphsdays);
             string typecontrolsjson = serializer.Serialize(typecontrols);
+
+            string typehitsjson = serializer.Serialize(returntypehits);
 
             ViewBag.Jsonlist = jsonlist;
             ViewBag.Patrollistjson = patrollistjson;
@@ -114,6 +124,8 @@ namespace googlemapmvc1.Controllers
             ViewBag.Statlistjson = statlistjson;
             ViewBag.Lphsdaysjson = lphsdaysjson;
             ViewBag.Typecontrolsjson = typecontrolsjson;
+
+            ViewBag.Typehitsjson = typehitsjson;
 
             return View();
 

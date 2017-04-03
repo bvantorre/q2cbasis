@@ -29,6 +29,14 @@ namespace googlemapmvc1.Models
             public double LPHS_Longitude { get; set; }
         }
 
+        public class Typehits
+
+        {
+            public int typehit { get; set; }
+            public Guid HTQU_ID { get; set; }
+
+        }
+
 
         public class Patrollermodel
         {
