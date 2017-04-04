@@ -51,7 +51,9 @@ namespace googlemapmvc1.Controllers
 
                var statlist = connection.Query<Controles>(sqlstring);
 
-                returnstatlist = statlist.ToList();
+                var returnstatlistdev = statlist.Take(100000);
+
+                returnstatlist = returnstatlistdev.ToList();
 
                 var hits = connection.Query<Typehits>(typehitsquery);
 
@@ -78,10 +80,11 @@ namespace googlemapmvc1.Controllers
 
 
                 //daytypes for lphs
+
                 var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
                 lphsdays = lphsdaytypes.ToList();
-                Debug.WriteLine("Bart" + lphsdays.Count());
-
+               
+                
 
 
                 //list of different scantypes (e.g. abonnement,parkingmonitor,parkeon,sms,..)

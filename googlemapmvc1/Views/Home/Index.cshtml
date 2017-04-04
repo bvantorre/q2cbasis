@@ -19,54 +19,16 @@
         
     background-color:#0000FF}
 
-    #date-info {position : absolute; top : 65px;left : 50px ;
+
+   #monthselector {position : absolute; top : 70px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 150px; width : 170px; border-radius : 10px;
+              height : 100px; width : 170px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
               font-size : 12px;
               padding : 6px 1px;background-color:white;
-             
-        
-           
-    }
 
 
-    #date-info-content {overflow : auto;border-radius :8px;
-                        height : 150px; width : 170px; 
-
-
-
-    }
-   
-
-    #datetitle{ font-family: 'Open Sans', sans-serif;
-              font-size : 11px;
-              background-color:white;
-           
-    }
-
-
-    #dateselect { font-family: 'Open Sans', sans-serif;
-              font-size : 11px;
-              padding : 0px;background-color:white;
-              margin : 0px;
-    }
-
-  #dateselector {
-            position: absolute;
-            top: 245px;
-            left: 50px;
-            border: 1px;
-            border-style: solid;
-            border-color: black;
-            height: 100px;
-            width: 150px;
-            border-radius: 10px;
-            padding: 10px;
-            background-color: white;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 11px;
-        }
+   }
 
 
     
@@ -107,23 +69,15 @@
 
    <div id="map"></div>
 
-
-   
-    <div id="date-info" >
-        <div id="date-info-content">
-            <h1 id="datetitle">Scan days</h1>
-            <ul id="dates-list"></ul>
-        </div>
-    </div>
-
-    <div id=dateselector>
-        <select name="dateselect" id="dateselect">
-            <option value="">Select dates</option>
-            <option value="">All dates</option>
+    <div id="monthselector">
+        <select name="monthselect" id="monthselect">
+            <option value="">select month</option>
+          
         </select>
 
-
-    </div>
+</div>
+   
+   
 
 
 
@@ -178,8 +132,7 @@
         var colors = ["red","blue","yellow","green","orange"];
         var gmarkers = [];
         var vmarkers=[];
-        var dateselect = document.getElementById("dateselect");
-        var dateselected = dateselect.value;
+       
 
 
         var dicttypecontrol = {
@@ -191,31 +144,47 @@
 
         }
 
-        console.log(dicttypecontrol[0])
+       
+
+        monthyear = [];
+
+        //data for monthselector
+        for (i=0;i<listlphsids.length;i++) {
+            var monthyearformat1 = moment(listlphsids[i].LPHS_CreatedOn).format("MM/YYYY");
+            monthyear.push(monthyearformat1);
+        };
+        console.log(listlphsids.length)
+        console.log(monthyear.length);
+        monthyear_dist = GetUnique(monthyear);
+        console.log("maandjaar"+monthyear_dist.length+monthyear_dist[0]);
 
 
-        //data for dateselector
+       // $("#monthselect").append("<option value=" + dayformat1 +">" +  dayformat1 + "</option>")
 
-            document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
+        for (i=0;i<monthyear_dist.length;i++) {
+           
+                
+            $("#monthselect").append("<option value=" + monthyear_dist[i] +">" + monthyear_dist[i]  + "</option>")
 
-            for (i=0;i<dayschron.length;i++) {
-
-                var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
-                var datenode = document.createElement("li");
-                var datetext = document.createTextNode( dayformatted);
-                datenode.appendChild(datetext);
-                document.getElementById("dates-list").appendChild(datenode);
+        };
 
 
-            };
 
+        function GetUnique(inputArray)
+        {
+            var outputArray = [];
+    
+            for (var i = 0; i < inputArray.length; i++)
+            {
+                if ((jQuery.inArray(inputArray[i], outputArray)) == -1)
+                {
+                    outputArray.push(inputArray[i]);
+                }
+            }
+   
+            return outputArray;
+        }
 
-            for (i=0;i<dayschron.length;i++) {
-                var dayformat1 = moment(dayschron[i]).format("DD/MM/YYYY");
-                console.log(dayformat1)
-                $("#dateselect").append("<option value=" + dayformat1 +">" +  dayformat1 + "</option>")
-
-            };
 
 
            //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
