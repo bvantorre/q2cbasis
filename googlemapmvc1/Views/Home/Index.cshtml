@@ -20,7 +20,7 @@
     background-color:#0000FF}
 
 
-   #monthselector {position : absolute; top : 70px;left : 50px ;
+   #monthyearselector {position : absolute; top : 70px;left : 50px ;
               border : 1px;border-style : solid; border-color : black;
               height : 100px; width : 170px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
@@ -69,8 +69,8 @@
 
    <div id="map"></div>
 
-    <div id="monthselector">
-        <select name="monthselect" id="monthselect">
+    <div id="monthyearselector">
+        <select name="monthyearselect" id="monthyearselect">
             <option value="">select month</option>
           
         </select>
@@ -153,23 +153,11 @@
             var monthyearformat1 = moment(listlphsids[i].LPHS_CreatedOn).format("MM/YYYY");
             monthyear.push(monthyearformat1);
         };
-        console.log(listlphsids.length)
-        console.log(monthyear.length);
+       
         monthyear_dist = GetUnique(monthyear);
-        console.log("maandjaar"+monthyear_dist.length+monthyear_dist[0]);
+       
 
-
-       // $("#monthselect").append("<option value=" + dayformat1 +">" +  dayformat1 + "</option>")
-
-        for (i=0;i<monthyear_dist.length;i++) {
-           
-                
-            $("#monthselect").append("<option value=" + monthyear_dist[i] +">" + monthyear_dist[i]  + "</option>")
-
-        };
-
-
-
+        // function to get unique values from array
         function GetUnique(inputArray)
         {
             var outputArray = [];
@@ -187,65 +175,109 @@
 
 
 
-           //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
+        //select values for monthyearselector
+        for (i=0;i<monthyear_dist.length;i++) {
+           
+                
+            $("#monthyearselect").append("<option value=" + monthyear_dist[i] +">" + monthyear_dist[i]  + "</option>")
+
+        };
+
+        //function for monthyearselector
+        $('#monthyearselect').on('change',function() {
+
+            monthyearselect = this.value;
+           
+           
+            listlphsidsselect = [] ;
+             
+               
+            for (i=0; i<listlphsids.length; i++) {
+
+               
+
+                                       
+                if( (moment(listlphsids[i].LPHS_CreatedOn).format("MM/YYYY")== monthyearselect)
+                    )  {
+
+                    listlphsidsselect.push(listlphsids[i])
+                   
+                }
+
+            };
+            //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
 
             var counttypecontrol =[];
             var labelsoftypecontrols =[];
 
-           for (i=0;i<typecontrols.length;i++) {
+            for (i=0;i<typecontrols.length;i++) {
 
-               var check = typecontrols[i];
-               var label = dicttypecontrol[check];
+                var check = typecontrols[i];
+                var label = dicttypecontrol[check];
                 var counter=0;
-                for (j=0;j<listlphsids.length;j++){
-                    if (listlphsids[j].LHDT_TypeControle==check ) {
+                for (j=0;j<listlphsidsselect.length;j++){
+                    if (listlphsidsselect[j].LHDT_TypeControle==check ) {
 
-                    counter= counter+1}
+                        counter= counter+1}
 
                 }
-                var typeperc = ((counter/listlphsids.length)*100).toFixed(2);
+                var typeperc = ((counter/listlphsidsselect.length)*100).toFixed(2);
                 counttypecontrol.push(typeperc);
                 labelsoftypecontrols.push(label);
 
 
-        };
+            };
 
-        //code to make piechart
-        var canvas = document.getElementById("piechartcanvascontrol")
-        var ctx = canvas.getContext("2d");
-
-
-        var mypieChart = new Chart (ctx, {
-            type : 'pie',
-            data : {
-                labels :labelsoftypecontrols,
-                datasets : [{
-                    backgroundColor: [
-                    "#2ecc71",
-                    "#3498db",
-                    "#95a5a6",
-                    "#9b59b6",
-                    "#f1c40f",
-                    "#e74c3c",
-                    "#34495e"
-                    ],
-                    label : "percentage",
-                    data : counttypecontrol
-                }]
-            },options : { responsive :true,maintainAspectRatio : false,
-                title : {display : true, text : "% type control",padding : 2},legend :{labels :{ boxWidth: 20}},
-                tooltips :{ callbacks: {
-                    label: function(tooltipItem, data) {
-                        var allData = data.datasets[tooltipItem.datasetIndex].data;
-                        var tooltipLabel = data.labels[tooltipItem.index];
-                        var tooltipData = allData[tooltipItem.index];
-
-                        return tooltipLabel + ': ' + tooltipData +  '%';
-                    }
-                }}
+            //code to make piechart
+            var canvas = document.getElementById("piechartcanvascontrol")
+            var ctx = canvas.getContext("2d");
 
 
-            }}) ;
+            var mypieChart = new Chart (ctx, {
+                type : 'pie',
+                data : {
+                    labels :labelsoftypecontrols,
+                    datasets : [{
+                        backgroundColor: [
+                        "#2ecc71",
+                        "#3498db",
+                        "#95a5a6",
+                        "#9b59b6",
+                        "#f1c40f",
+                        "#e74c3c",
+                        "#34495e"
+                        ],
+                        label : "percentage",
+                        data : counttypecontrol
+                    }]
+                },options : { responsive :true,maintainAspectRatio : false,
+                    title : {display : true, text : "ratio type control  "+ monthyearselect ,padding : 2},legend :{labels :{ boxWidth: 20}},
+                    tooltips :{ callbacks: {
+                        label: function(tooltipItem, data) {
+                            var allData = data.datasets[tooltipItem.datasetIndex].data;
+                            var tooltipLabel = data.labels[tooltipItem.index];
+                            var tooltipData = allData[tooltipItem.index];
+
+                            return tooltipLabel + ': ' + tooltipData +  '%';
+                        }
+                    }}
+
+
+                }}) ;
+
+
+
+        });
+
+
+
+
+
+       
+
+
+
+           
 
         //code calculate data for piechart hits (e.g. ongewerkte hit, geannuleerde hit,gevalideerde hit,..)
         var dicttypehits = {
