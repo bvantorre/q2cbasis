@@ -44,8 +44,20 @@
 
     }
 
-  #piecharthits {position : absolute; top : 65px;left : 600px ;
+
+  #tablecontrol {position : absolute; top : 350px;left : 300px ;
               border : 1px;border-style : solid; border-color : black;
+              height : 200px; width : 250px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 10px;background-color:white;
+
+
+    }
+
+
+  #piecharthits {position : absolute; top : 65px;left : 600px ;
+              border : 2px;border-style : solid; border-color : black;
               height : 250px; width : 250px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
               font-size : 11px;
@@ -56,7 +68,13 @@
    
      h1 {font-family: 'Open Sans', sans-serif;
               font-size : 11px;
-              padding : 10px;background-color:white;}     
+              padding : 10px;background-color:white;}  
+     
+     table,th,td {  border : 1px;border-style : solid; border-color : black;
+              border-radius : 2px;
+
+
+     }   
    
     
     </style>
@@ -90,14 +108,32 @@
 
     <div id="chart">
         <canvas id="mychart" width="400" height="400"></canvas>
-
     </div> 
+
+
     <div id="piechartcontrol">
         <canvas id="piechartcanvascontrol"></canvas>
+    </div>  
+    
+    <div id="tablecontrol">
+        <table id="controltable">
+            <tr>
+                <th>Type scan</th>
+                <th> Aantal</th>
+                <th>percentage</th>
+
+            </tr>
+
+
+        </table>
 
 
 
-    </div>             
+
+    </div>
+      
+    
+           
     <div id="piecharthits">
         <canvas id="piechartcanvashits"></canvas>
 
@@ -174,7 +210,9 @@
             }
    
             return outputArray;
-        }
+        };
+
+        var tablescantype = document.getElementById("controltable");
 
         //code for piechart when page firstloaded
         var counttypecontrol =[];
@@ -194,9 +232,23 @@
             var typeperc = ((counter/listlphsids.length)*100).toFixed(2);
             counttypecontrol.push(typeperc);
             labelsoftypecontrols.push(label);
+            var row = tablescantype.insertRow(i+1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            cell1.innerHTML = label;
+            cell2.innerHTML = counter;
+            cell3.innerHTML = typeperc;
+
+
 
 
         };
+
+        
+
+
+
 
         //code to make piechart
         var canvas = document.getElementById("piechartcanvascontrol")
@@ -255,7 +307,10 @@
         };
 
         
+       
 
+
+        var listlphsidsselect =[];
 
 
 
@@ -265,7 +320,7 @@
             monthyearselect = this.value;
            
            
-            listlphsidsselect = [] ;
+            listlphsidsselect.length=0 
              
                
             for (i=0; i<listlphsids.length; i++) {
@@ -274,6 +329,8 @@
 
                                        
                 if( (moment(listlphsids[i].LPHS_CreatedOn).format("MM/YYYY")== monthyearselect) 
+                    || (monthyearselect.length==0)
+
                     
                     )  {
 
@@ -281,7 +338,12 @@
                    
                 }
 
+               
+
+
             };
+            if (monthyearselect.length==0) {monthyearselect="up to now"}
+
             //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
 
             var counttypecontrol =[];
