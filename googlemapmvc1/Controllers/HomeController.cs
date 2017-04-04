@@ -34,7 +34,7 @@ namespace googlemapmvc1.Controllers
             var typecontrols = new List<int>();
 
             string sqlstring = System.IO.File.ReadAllText(@"C:\Users\vanto\Downloads\sqlquerystat.sql");
-            string typehitsquery = System.IO.File.ReadAllText(@"C:\Users\vanto\Downloads\typehitsquery.sql");
+            string typehitsquery = System.IO.File.ReadAllText(@"C:\Users\vanto\Desktop\typehitsquery.sql");
 
 
             string connectionString = "data source=ikt4ztoj17.database.windows.net;initial catalog=Q2CCloudMobile_OPC;user id=SQLAdmin;password=Q2C_141500";
@@ -49,6 +49,8 @@ namespace googlemapmvc1.Controllers
                 //Create 1st vehicle list
 
                var statlist = connection.Query<Controles>(sqlstring);
+
+                returnstatlist = statlist.ToList();
 
                 var typehits = connection.Query<Typehits>(typehitsquery);
 
@@ -77,7 +79,7 @@ namespace googlemapmvc1.Controllers
                 //daytypes for lphs
                 var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
                 lphsdays = lphsdaytypes.ToList();
-               
+                Debug.WriteLine("Bart" + lphsdays.Count());
                 //list of different scantypes (e.g. abonnement,parkingmonitor,parkeon,sms,..)
 
 
