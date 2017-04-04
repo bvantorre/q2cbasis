@@ -72,9 +72,9 @@
     
     select { border-radius : 10px}
    
-  #piechart {position : absolute; top : 65px;left : 400px ;
+  #piechartcontrol {position : absolute; top : 65px;left : 300px ;
               border : 1px;border-style : solid; border-color : black;
-              height : 500px; width : 500px; border-radius : 10px;
+              height : 250px; width : 250px; border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
               font-size : 11px;
               padding : 10px;background-color:white;
@@ -82,6 +82,15 @@
 
     }
 
+  #piecharthits {position : absolute; top : 65px;left : 600px ;
+              border : 1px;border-style : solid; border-color : black;
+              height : 250px; width : 250px; border-radius : 10px;
+              font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 10px;background-color:white;
+
+
+    }
    
           
    
@@ -126,13 +135,20 @@
         <canvas id="mychart" width="400" height="400"></canvas>
 
     </div> 
-    <div id="piechart">
-        <canvas id="mypiechart"></canvas>
+    <div id="piechartcontrol">
+        <canvas id="piechartcanvascontrol"></canvas>
 
 
 
     </div>             
-                   
+    <div id="piecharthits">
+        <canvas id="piechartcanvashits"></canvas>
+
+
+
+    </div>               
+    
+                
         
     <script src="~/Scripts/jquery-2.2.3.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -156,7 +172,8 @@
         var typecontrols = @Html.Raw(ViewBag.Typecontrolsjson);
         //
 
-        var typehits = @Html.Raw(ViewBag.Typehitsjson);
+        var hits = @Html.Raw(ViewBag.Hitsjson);
+        var hittypes = @Html.Raw(ViewBag.Hittypesjson);
 
         var colors = ["red","blue","yellow","green","orange"];
         var gmarkers = [];
@@ -164,10 +181,10 @@
         var dateselect = document.getElementById("dateselect");
         var dateselected = dateselect.value;
 
-        
+
         var dicttypecontrol = {
 
-        0 :'Parking Monitor',1 :'Uurrooster', 2: 'SMS', 3: 'Abonnement', 
+        0 :'Parking Monitor',1 :'Uurrooster', 2: 'SMS', 3: 'Abonnement',
 			5: 'Tweede RB',7: 'Bevroren Nummerplaat', 20: 'Sensibilisering', 100: 'YellowBrick', 110: 'PayByPhone',
 			120: 'Parkeon', 130: 'Mobigo', 140: 'Presto', 150: 'MobileFor', 160: 'ParkMobile', 170: 'Extenso',
 			180: 'CEVI', 190: 'Hectronic', 200: 'Parkare', 999: 'TOTAAL'
@@ -201,9 +218,8 @@
             };
 
 
-            console.log(typecontrols.length);
-            console.log(listlphsids.length);
-        
+           //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
+
             var counttypecontrol =[];
             var labelsoftypecontrols =[];
 
@@ -216,17 +232,17 @@
                     if (listlphsids[j].LHDT_TypeControle==check ) {
 
                     counter= counter+1}
-                   
-                } 
+
+                }
                 var typeperc = ((counter/listlphsids.length)*100).toFixed(2);
                 counttypecontrol.push(typeperc);
                 labelsoftypecontrols.push(label);
-            
+
 
         };
-         
 
-        var canvas = document.getElementById("mypiechart")
+        //code to make piechart
+        var canvas = document.getElementById("piechartcanvascontrol")
         var ctx = canvas.getContext("2d");
 
 
@@ -261,6 +277,72 @@
 
 
             }}) ;
+
+        //code calculate data for piechart hits (e.g. ongewerkte hit, geannuleerde hit,gevalideerde hit,..)
+        var dicttypehits = {
+            0 :'ongewerkte hit',1 :'geannuleerde hit', 2: 'gevalideerde hit', 4: 'Duplicate hit'
+
+        };
+
+
+
+        var counttypehit =[];
+        var labelsoftypehit =[];
+
+        for (i=0;i<hittypes.length;i++) {
+
+            var check = hittypes[i];
+            var label = dicttypehits[check];
+            var counter=0;
+            for (j=0;j<hits.length;j++){
+                if (hits[j].typehit==check ) {
+
+                    counter= counter+1}
+
+            }
+            var hittypeperc = ((counter/hits.length)*100).toFixed(2);
+            counttypehit.push(hittypeperc);
+            labelsoftypehit.push(label);
+
+
+        };
+
+        var canvas = document.getElementById("piechartcanvashits")
+        var ctx = canvas.getContext("2d");
+
+
+        var mypieChart = new Chart (ctx, {
+            type : 'pie',
+            data : {
+                labels :labelsoftypehit,
+                datasets : [{
+                    backgroundColor: [
+                    "#2ecc71",
+                    "#3498db",
+                    "#95a5a6",
+                    "#9b59b6",
+                    "#f1c40f",
+                    "#e74c3c",
+                    "#34495e"
+                    ],
+                    label : "percentage",
+                    data : counttypehit
+                }]
+            },options : { responsive :true,maintainAspectRatio : false,
+                title : {display : true, text : "% type hits",padding : 2},legend :{labels :{ boxWidth: 20}},
+                tooltips :{ callbacks: {
+                    label: function(tooltipItem, data) {
+                        var allData = data.datasets[tooltipItem.datasetIndex].data;
+                        var tooltipLabel = data.labels[tooltipItem.index];
+                        var tooltipData = allData[tooltipItem.index];
+
+                        return tooltipLabel + ': ' + tooltipData +  '%';
+                    }
+                }}
+
+
+            }}) ;
+
 
 
 

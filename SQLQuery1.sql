@@ -1,0 +1,4 @@
+﻿select typehit = (CASE WHEN (P.HTQU_Step = 1 AND EXISTS (SELECT 1 FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] AS M
+                                                    WHERE M.HTQU_ID = P.HTQU_ID))
+
+ THEN 2 ELSE P.HTQU_Step END), P.HTQU_ID FROM [ParkingMonitorQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] AS P

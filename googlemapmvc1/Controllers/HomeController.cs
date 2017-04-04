@@ -23,7 +23,7 @@ namespace googlemapmvc1.Controllers
             
             var returnFullList = new List<Carread>();
             var returnstatlist = new List<Controles>();
-            var returntypehits = new List<Typehits>();
+            var returnhits = new List<Typehits>();
            
            
             var returnPatrollist = new List<Patrollermodel>();
@@ -32,6 +32,7 @@ namespace googlemapmvc1.Controllers
             var days = new List<DateTime>();
             var lphsdays = new List<DateTime>();
             var typecontrols = new List<int>();
+            var hittypes = new List<int>();
 
             string sqlstring = System.IO.File.ReadAllText(@"C:\Users\vanto\Downloads\sqlquerystat.sql");
             string typehitsquery = System.IO.File.ReadAllText(@"C:\Users\vanto\Desktop\typehitsquery.sql");
@@ -52,13 +53,13 @@ namespace googlemapmvc1.Controllers
 
                 returnstatlist = statlist.ToList();
 
-                var typehits = connection.Query<Typehits>(typehitsquery);
+                var hits = connection.Query<Typehits>(typehitsquery);
 
 
 
-                var returntypehitsdev = typehits.Take(10000);
+                var returntypehitsdev = hits.Take(10000);
 
-                returntypehits = returntypehitsdev.ToList();
+                returnhits = returntypehitsdev.ToList();
                
 
 
@@ -80,12 +81,17 @@ namespace googlemapmvc1.Controllers
                 var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
                 lphsdays = lphsdaytypes.ToList();
                 Debug.WriteLine("Bart" + lphsdays.Count());
+
+
+
                 //list of different scantypes (e.g. abonnement,parkingmonitor,parkeon,sms,..)
-
-
                 var TypeControle = (from x in returnstatlist select x.LHDT_TypeControle).Distinct();
                 typecontrols = TypeControle.ToList();
-               
+
+
+                //list of different hit types (0 : ongewerkte hit,1 : geannuleerde hit,2 :gevalideerde hit,4 : duplicate hit)
+                var hittype = (from x in returnhits select x.typehit).Distinct();
+                hittypes = hittype.ToList();
 
 
 
@@ -117,7 +123,8 @@ namespace googlemapmvc1.Controllers
             string lphsdaysjson = serializer.Serialize(lphsdays);
             string typecontrolsjson = serializer.Serialize(typecontrols);
 
-            string typehitsjson = serializer.Serialize(returntypehits);
+            string hitsjson = serializer.Serialize(returnhits);
+            string hittypesjson = serializer.Serialize(hittypes);
 
             ViewBag.Jsonlist = jsonlist;
             ViewBag.Patrollistjson = patrollistjson;
@@ -127,7 +134,9 @@ namespace googlemapmvc1.Controllers
             ViewBag.Lphsdaysjson = lphsdaysjson;
             ViewBag.Typecontrolsjson = typecontrolsjson;
 
-            ViewBag.Typehitsjson = typehitsjson;
+            ViewBag.Hitsjson = hitsjson;
+            ViewBag.Hittypesjson = hittypesjson;
+
 
             return View();
 
