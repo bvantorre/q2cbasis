@@ -54,7 +54,9 @@
 
     }
    
-          
+     h1 {font-family: 'Open Sans', sans-serif;
+              font-size : 11px;
+              padding : 10px;background-color:white;}     
    
     
     </style>
@@ -70,6 +72,7 @@
    <div id="map"></div>
 
     <div id="monthyearselector">
+        <h1>Kies periode voor data analyse </h1>
         <select name="monthyearselect" id="monthyearselect">
             <option value="">select month</option>
           
@@ -144,7 +147,7 @@
 
         }
 
-       
+                       
 
         monthyear = [];
 
@@ -173,6 +176,74 @@
             return outputArray;
         }
 
+        //code for piechart when page firstloaded
+        var counttypecontrol =[];
+        var labelsoftypecontrols =[];
+
+        for (i=0;i<typecontrols.length;i++) {
+
+            var check = typecontrols[i];
+            var label = dicttypecontrol[check];
+            var counter=0;
+            for (j=0;j<listlphsids.length;j++){
+                if (listlphsids[j].LHDT_TypeControle==check ) {
+
+                    counter= counter+1}
+
+            }
+            var typeperc = ((counter/listlphsids.length)*100).toFixed(2);
+            counttypecontrol.push(typeperc);
+            labelsoftypecontrols.push(label);
+
+
+        };
+
+        //code to make piechart
+        var canvas = document.getElementById("piechartcanvascontrol")
+        var ctx = canvas.getContext("2d");
+
+
+        var mypieChart = new Chart (ctx, {
+            type : 'pie',
+            data : {
+                labels :labelsoftypecontrols,
+                datasets : [{
+                    backgroundColor: [
+                    "#2ecc71",
+                    "#3498db",
+                    "#95a5a6",
+                    "#9b59b6",
+                    "#f1c40f",
+                    "#e74c3c",
+                    "#34495e"
+                    ],
+                    label : "percentage",
+                    data : counttypecontrol
+                }]
+            },options : { responsive :true,maintainAspectRatio : false,
+                title : {display : true, text : "ratio type control up to now " ,padding : 2},legend :{labels :{ boxWidth: 20}},
+                tooltips :{ callbacks: {
+                    label: function(tooltipItem, data) {
+                        var allData = data.datasets[tooltipItem.datasetIndex].data;
+                        var tooltipLabel = data.labels[tooltipItem.index];
+                        var tooltipData = allData[tooltipItem.index];
+
+                        return tooltipLabel + ': ' + tooltipData +  '%';
+                    }
+                }}
+
+
+            }}) ;
+
+
+
+        
+
+
+
+
+
+
 
 
         //select values for monthyearselector
@@ -182,6 +253,11 @@
             $("#monthyearselect").append("<option value=" + monthyear_dist[i] +">" + monthyear_dist[i]  + "</option>")
 
         };
+
+        
+
+
+
 
         //function for monthyearselector
         $('#monthyearselect').on('change',function() {
@@ -197,7 +273,8 @@
                
 
                                        
-                if( (moment(listlphsids[i].LPHS_CreatedOn).format("MM/YYYY")== monthyearselect)
+                if( (moment(listlphsids[i].LPHS_CreatedOn).format("MM/YYYY")== monthyearselect) 
+                    
                     )  {
 
                     listlphsidsselect.push(listlphsids[i])
