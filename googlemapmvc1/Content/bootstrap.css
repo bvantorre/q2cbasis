@@ -58,7 +58,7 @@ html {
 }
 
 body {
-  margin: 0;
+  margin: 0;background-color:blue
 }
 
 a:focus {
@@ -136,7 +136,8 @@ sub {
 }
 
 img {
-  border: 0;
+  border: 5px;
+  margin-top:16px
 }
 
 svg:not(:root) {
@@ -170,6 +171,7 @@ textarea {
 button,
 input {
   line-height: normal;
+  
 }
 
 button,
@@ -260,6 +262,7 @@ table {
   }
   img {
     max-width: 100% !important;
+    
   }
   @page  {
     margin: 2cm .5cm;
@@ -315,7 +318,8 @@ body {
   font-size: 14px;
   line-height: 1.428571429;
   color: #333333;
-  background-color: #ffffff;
+ 
+  padding : 40px
 }
 
 input,
@@ -858,8 +862,9 @@ pre code {
 .col-lg-12 {
   position: relative;
   min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 10px;
+  padding-left: 2px;
+  
 }
 
 .col-xs-1,
@@ -4028,6 +4033,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   min-height: 50px;
   margin-bottom: 20px;
   border: 1px solid transparent;
+  background-color : #012d46
 }
 
 .navbar:before,
@@ -4384,8 +4390,8 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .navbar-default {
-  background-color: #f8f8f8;
-  border-color: #e7e7e7;
+  background-color: #012d46;
+ 
 }
 
 .navbar-default .navbar-brand {
