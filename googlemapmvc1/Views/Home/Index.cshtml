@@ -344,11 +344,11 @@ $(function() {
         celltotal3.innerHTML="100%";
 
       
-        var canvas = document.getElementById("piechartcanvascontrol")
-        var ctx = canvas.getContext("2d");
+        var canvascontrol = document.getElementById("piechartcanvascontrol")
+        var ctxcontrol = canvascontrol.getContext("2d");
 
 
-        var mypieChart = new Chart (ctx, {
+        var controlpieChart = new Chart (ctxcontrol, {
             type : 'pie',
             data : {
                 labels :labelsoftypecontrols,
@@ -425,11 +425,11 @@ $(function() {
         celltotalhit3.innerHTML="100%";
 
 
-        var canvas = document.getElementById("piechartcanvashits")
-        var ctx = canvas.getContext("2d");
+        var canvashit = document.getElementById("piechartcanvashits")
+        var ctxhit = canvashit.getContext("2d");
 
 
-        var mypieChart = new Chart (ctx, {
+        var hitpieChart = new Chart (ctxhit, {
             type : 'pie',
             data : {
                 labels :labelsoftypehit,
@@ -596,11 +596,11 @@ $(function() {
 
 
             //code to make piechart control type dynamically
-            var canvas = document.getElementById("piechartcanvascontrol")
-            var ctx = canvas.getContext("2d");
+           
+         
 
 
-            var mypieChart = new Chart (ctx, {
+            var controlpieChart = new Chart (ctxcontrol, {
                 type : 'pie',
                 data : {
                     labels :labelsoftypecontrols,
@@ -683,8 +683,9 @@ $(function() {
             var canvas = document.getElementById("piechartcanvashits")
             var ctx = canvas.getContext("2d");
 
+           
 
-            var mypieChart = new Chart (ctx, {
+            var hitpieChart = new Chart (ctxhit, {
                 type : 'pie',
                 data : {
                     labels :labelsoftypehit,
