@@ -135,14 +135,14 @@
 
     </nav>
 
-    <div class="row">
+    @*<div class="row">
         <div id="rangepicker">
             <input type="text" name="daterange"  value="01/01/2015 1:30 PM - 01/01/2015 2:00 PM" />
 
 
         </div>
 
-    </div>
+    </div>*@
 
 
 
@@ -415,6 +415,15 @@ $(function() {
 
 
         };
+        var rowtotalhit = tablehittype.insertRow(hittypes.length+1);
+        var celltotalhit1 = rowtotalhit.insertCell(0);
+        var celltotalhit2= rowtotalhit.insertCell(1);
+        var celltotalhit3=rowtotalhit.insertCell(2);
+       
+        celltotalhit1.innerHTML="Totaal";
+        celltotalhit2.innerHTML= hits.length; 
+        celltotalhit3.innerHTML="100%";
+
 
         var canvas = document.getElementById("piechartcanvashits")
         var ctx = canvas.getContext("2d");
@@ -573,6 +582,15 @@ $(function() {
 
             };
 
+            var rowtotal = tablescantype.insertRow(typecontrols.length+1);
+            var celltotal1 = rowtotal.insertCell(0);
+            var celltotal2= rowtotal.insertCell(1);
+            var celltotal3=rowtotal.insertCell(2);
+       
+            celltotal1.innerHTML="Totaal";
+            celltotal2.innerHTML= listlphsidsselect.length; 
+            celltotal3.innerHTML="100%";
+
 
 
 
@@ -652,6 +670,15 @@ $(function() {
 
 
             };
+
+            var rowtotalhit = tablehittype.insertRow(hittypes.length+1);
+            var celltotalhit1 = rowtotalhit.insertCell(0);
+            var celltotalhit2= rowtotalhit.insertCell(1);
+            var celltotalhit3=rowtotalhit.insertCell(2);
+       
+            celltotalhit1.innerHTML="Totaal";
+            celltotalhit2.innerHTML= hitselect.length; 
+            celltotalhit3.innerHTML="100%";
 
             var canvas = document.getElementById("piechartcanvashits")
             var ctx = canvas.getContext("2d");
