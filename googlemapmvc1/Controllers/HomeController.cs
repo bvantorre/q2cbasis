@@ -91,7 +91,7 @@ namespace googlemapmvc1.Controllers
                 //list of different scantypes (e.g. abonnement,parkingmonitor,parkeon,sms,..)
                 var TypeControle = (from x in returnstatlist select x.LHDT_TypeControle).Distinct();
                 typecontrols = TypeControle.ToList();
-
+                Debug.WriteLine("typecontroles" + typecontrols[0] + typecontrols[1]);
 
                 //list of different hit types (0 : ongewerkte hit,1 : geannuleerde hit,2 :gevalideerde hit,4 : duplicate hit)
                 var hittype = (from x in returnhits select x.typehit).Distinct();
