@@ -34,6 +34,7 @@ namespace googlemapmvc1.Models
         {
             public int typehit { get; set; }
             public Guid HTQU_ID { get; set; }
+            public DateTime HTQU_CreatedOn { get; set; }
 
         }
 

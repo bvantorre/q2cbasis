@@ -34,7 +34,7 @@ namespace googlemapmvc1.Controllers
             var typecontrols = new List<int>();
             var hittypes = new List<int>();
 
-            string sqlstring = System.IO.File.ReadAllText(@"C:\Users\vanto\Downloads\sqlquerystat.sql");
+            string sqlstring = System.IO.File.ReadAllText(@"C:\Users\vanto\Desktop\sqlquerystat.sql");
             string typehitsquery = System.IO.File.ReadAllText(@"C:\Users\vanto\Desktop\typehitsquery.sql");
 
 
@@ -46,22 +46,23 @@ namespace googlemapmvc1.Controllers
                 connection.Open();
 
                 //Get vehcile list
-               var fullList = connection.Query<Carread>("SELECT TOP 4000 * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
+               var fullList = connection.Query<Carread>("SELECT * FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] ORDER BY HTQU_CreatedOn DESC");
                 //Create 1st vehicle list
 
                var statlist = connection.Query<Controles>(sqlstring);
 
-                var returnstatlistdev = statlist.Take(100000);
+                Debug.WriteLine("aantal controles" + statlist.Count());
+                
 
-                returnstatlist = returnstatlistdev.ToList();
+                returnstatlist = statlist.ToList();
 
                 var hits = connection.Query<Typehits>(typehitsquery);
+                Debug.WriteLine("aantal hits"+ hits.Count());
 
 
+                
 
-                var returntypehitsdev = hits.Take(10000);
-
-                returnhits = returntypehitsdev.ToList();
+                returnhits = hits.ToList();
                
 
 

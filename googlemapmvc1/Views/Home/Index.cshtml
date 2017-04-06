@@ -154,7 +154,7 @@
             <div id="monthyearselector">
                 <p>Kies periode voor data analyse </p>
                 <select name="monthyearselect" id="monthyearselect">
-                    <option value="">select month</option>
+                    <option value="">up to now</option>
 
                 </select>
             </div>
@@ -211,14 +211,6 @@
        
     </div>
 
-
-  
-   
-   
-   
-
-
-    
    
     <script type="text/javascript">
 
@@ -244,6 +236,7 @@ $(function() {
 
         //data for chart type of scans
         var listlphsids = @Html.Raw(ViewBag.Statlistjson);
+        
         var lphsdays =  @Html.Raw(ViewBag.Lphsdaysjson);
         var lphsdayschron = lphsdays.reverse();
         var typecontrols = @Html.Raw(ViewBag.Typecontrolsjson);
@@ -296,6 +289,17 @@ $(function() {
             return outputArray;
         };
 
+
+        //select values for monthyearselector
+        for (i=0;i<monthyear_dist.length;i++) {
+
+
+            $("#monthyearselect").append("<option value=" + monthyear_dist[i] +">" + monthyear_dist[i]  + "</option>")
+
+        };
+
+
+
         var tablescantype = document.getElementById("controltable");
         var tablehittype = document.getElementById("hittable");
 
@@ -330,13 +334,16 @@ $(function() {
 
 
         };
+        var rowtotal = tablescantype.insertRow(typecontrols.length+1);
+        var celltotal1 = rowtotal.insertCell(0);
+        var celltotal2= rowtotal.insertCell(1);
+        var celltotal3=rowtotal.insertCell(2);
+       
+        celltotal1.innerHTML="Totaal";
+        celltotal2.innerHTML= listlphsids.length; 
+        celltotal3.innerHTML="100%";
 
-
-
-
-
-
-        //code to make piechart type control
+      
         var canvas = document.getElementById("piechartcanvascontrol")
         var ctx = canvas.getContext("2d");
 
@@ -359,7 +366,7 @@ $(function() {
                     data : counttypecontrol
                 }]
             },options : { responsive :true,maintainAspectRatio : false,
-                title : {display : true, text : "ratio type control up to now " ,padding : 2},legend :{labels :{ boxWidth: 20}},
+                title : {display : true, text : "ratio type control " ,padding : 2},legend :{labels :{ boxWidth: 20}},
                 tooltips :{ callbacks: {
                     label: function(tooltipItem, data) {
                         var allData = data.datasets[tooltipItem.datasetIndex].data;
@@ -373,20 +380,89 @@ $(function() {
 
             }}) ;
 
-
-
-        //select values for monthyearselector
-        for (i=0;i<monthyear_dist.length;i++) {
-
-
-            $("#monthyearselect").append("<option value=" + monthyear_dist[i] +">" + monthyear_dist[i]  + "</option>")
+        //code for piechart hits type when first loaded
+        var dicttypehits = {
+            0 :'ongewerkte hit',1 :'geannuleerde hit', 2: 'gevalideerde hit', 4: 'Duplicate hit'
 
         };
 
 
+       
+        var counttypehit =[];
+        var labelsoftypehit =[];
+
+        for (i=0;i<hittypes.length;i++) {
+
+            var checkhit = hittypes[i];
+            var labelhit = dicttypehits[checkhit];
+            var counterhit=0;
+            for (j=0;j<hits.length;j++){
+                if (hits[j].typehit==checkhit ) {
+
+                    counterhit= counterhit+1}
+
+            }
+            var hittypeperc = ((counterhit/hits.length)*100).toFixed(2);
+            counttypehit.push(hittypeperc);
+            labelsoftypehit.push(labelhit);
+            var rowhit = tablehittype.insertRow(i+1);
+            var cella = rowhit.insertCell(0);
+            var cellb = rowhit.insertCell(1);
+            var cellc = rowhit.insertCell(2);
+            cella.innerHTML = labelhit;
+            cellb.innerHTML = counterhit;
+            cellc.innerHTML = hittypeperc;
+
+
+        };
+
+        var canvas = document.getElementById("piechartcanvashits")
+        var ctx = canvas.getContext("2d");
+
+
+        var mypieChart = new Chart (ctx, {
+            type : 'pie',
+            data : {
+                labels :labelsoftypehit,
+                datasets : [{
+                    backgroundColor: [
+                    "#2ecc71",
+                    "#3498db",
+                    "#95a5a6",
+                    "#9b59b6",
+                    "#f1c40f",
+                    "#e74c3c",
+                    "#34495e"
+                    ],
+                    label : "percentage",
+                    data : counttypehit
+                }]
+            },options : { responsive :true,maintainAspectRatio : false,
+                title : {display : true, text : "ratio type hits",padding : 2},legend :{labels :{ boxWidth: 20}},
+                tooltips :{ callbacks: {
+                    label: function(tooltipItem, data) {
+                        var allData = data.datasets[tooltipItem.datasetIndex].data;
+                        var tooltipLabel = data.labels[tooltipItem.index];
+                        var tooltipData = allData[tooltipItem.index];
+
+                        return tooltipLabel + ': ' + tooltipData +  '%';
+                    }
+                }}
+
+
+            }}) ;
+
+        
+
+
+
+
+
+      
+
 
         var listlphsidsselect =[];
-
+        var hitselect =[];
 
 
         //function for monthyearselector
@@ -394,14 +470,15 @@ $(function() {
 
             monthyearselect = this.value;
 
-
-            listlphsidsselect.length=0
-            //remove all rows except th
+            
+            listlphsidsselect.length=0;
+            hitselect.length=0;
+            //remove all rows except th from table with ratio type control
             var rowCount=tablescantype.rows.length;
             for (var x=rowCount-1;x>0;x--) {
                 tablescantype.deleteRow(x);
             }
-
+            //remove all rows except th from table with ratio type hits
             var rowCounthits = tablehittype.rows.length;
             for (var x=rowCounthits-1;x>0;x--){
 
@@ -409,6 +486,9 @@ $(function() {
             }
 
 
+
+
+            //monthyear filter for type control
             for (i=0; i<listlphsids.length; i++) {
 
 
@@ -426,7 +506,36 @@ $(function() {
 
 
             };
-            if (monthyearselect.length==0) {monthyearselect="up to now"}
+           
+
+
+            // monthyear filter for hits
+            for (i=0; i<hits.length; i++) {
+
+
+                if( (moment(hits[i].HTQU_CreatedOn).format("MM/YYYY")== monthyearselect)
+                    || (monthyearselect.length==0)
+
+
+                    )  {
+
+                    hitselect.push(hits[i])
+
+                }
+
+
+
+
+            };
+
+
+
+
+
+
+
+
+
 
             //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
 
@@ -491,7 +600,7 @@ $(function() {
                         data : counttypecontrol
                     }]
                 },options : { responsive :true,maintainAspectRatio : false,
-                    title : {display : true, text : "ratio type control  "+ monthyearselect ,padding : 2},legend :{labels :{ boxWidth: 20}},
+                    title : {display : true, text : "ratio type control  ",padding : 2},legend :{labels :{ boxWidth: 20}},
                     tooltips :{ callbacks: {
                         label: function(tooltipItem, data) {
                             var allData = data.datasets[tooltipItem.datasetIndex].data;
@@ -518,25 +627,28 @@ $(function() {
 
             for (i=0;i<hittypes.length;i++) {
 
-                var check = hittypes[i];
-                var label = dicttypehits[check];
-                var counter=0;
-                for (j=0;j<hits.length;j++){
-                    if (hits[j].typehit==check ) {
+                var checkhit = hittypes[i];
+                console.log(checkhit);
+                var labelhit = dicttypehits[checkhit];
+                var counterhit=0;
+                for (j=0;j<hitselect.length;j++){
+                    if (hitselect[j].typehit==checkhit ) {
 
-                        counter= counter+1}
+                        counterhit= counterhit+1}
 
                 }
-                var hittypeperc = ((counter/hits.length)*100).toFixed(2);
+                console.log(counterhit);
+                var hittypeperc = ((counterhit/hitselect.length)*100).toFixed(2);
                 counttypehit.push(hittypeperc);
-                labelsoftypehit.push(label);
-                var row = tablehittype.insertRow(i+1);
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
-                cell1.innerHTML = label;
-                cell2.innerHTML = counter;
-                cell3.innerHTML = hittypeperc;
+                labelsoftypehit.push(labelhit);
+
+                var rowhit = tablehittype.insertRow(i+1);
+                var cella = rowhit.insertCell(0);
+                var cellb = rowhit.insertCell(1);
+                var cellc = rowhit.insertCell(2);
+                cella.innerHTML = labelhit;
+                cellb.innerHTML = counterhit;
+                cellc.innerHTML = hittypeperc;
 
 
             };
@@ -563,7 +675,7 @@ $(function() {
                         data : counttypehit
                     }]
                 },options : { responsive :true,maintainAspectRatio : false,
-                    title : {display : true, text : "% type hits",padding : 2},legend :{labels :{ boxWidth: 20}},
+                    title : {display : true, text :" ratio type hits",padding : 2},legend :{labels :{ boxWidth: 20}},
                     tooltips :{ callbacks: {
                         label: function(tooltipItem, data) {
                             var allData = data.datasets[tooltipItem.datasetIndex].data;
@@ -595,80 +707,7 @@ $(function() {
 
 
 
-        //code for piechart hits type when first loaded
-        var dicttypehits = {
-            0 :'ongewerkte hit',1 :'geannuleerde hit', 2: 'gevalideerde hit', 4: 'Duplicate hit'
-
-        };
-
-
        
-        var counttypehit =[];
-        var labelsoftypehit =[];
-
-        for (i=0;i<hittypes.length;i++) {
-
-            var check = hittypes[i];
-            var label = dicttypehits[check];
-            var counter=0;
-            for (j=0;j<hits.length;j++){
-                if (hits[j].typehit==check ) {
-
-                    counter= counter+1}
-
-            }
-            var hittypeperc = ((counter/hits.length)*100).toFixed(2);
-            counttypehit.push(hittypeperc);
-            labelsoftypehit.push(label);
-            var row = tablehittype.insertRow(i+1);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            cell1.innerHTML = label;
-            cell2.innerHTML = counter;
-            cell3.innerHTML = hittypeperc;
-
-
-        };
-
-        var canvas = document.getElementById("piechartcanvashits")
-        var ctx = canvas.getContext("2d");
-
-
-        var mypieChart = new Chart (ctx, {
-            type : 'pie',
-            data : {
-                labels :labelsoftypehit,
-                datasets : [{
-                    backgroundColor: [
-                    "#2ecc71",
-                    "#3498db",
-                    "#95a5a6",
-                    "#9b59b6",
-                    "#f1c40f",
-                    "#e74c3c",
-                    "#34495e"
-                    ],
-                    label : "percentage",
-                    data : counttypehit
-                }]
-            },options : { responsive :true,maintainAspectRatio : false,
-                title : {display : true, text : "% type hits",padding : 2},legend :{labels :{ boxWidth: 20}},
-                tooltips :{ callbacks: {
-                    label: function(tooltipItem, data) {
-                        var allData = data.datasets[tooltipItem.datasetIndex].data;
-                        var tooltipLabel = data.labels[tooltipItem.index];
-                        var tooltipData = allData[tooltipItem.index];
-
-                        return tooltipLabel + ': ' + tooltipData +  '%';
-                    }
-                }}
-
-
-            }}) ;
-
-        
-
 
 
 
