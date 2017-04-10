@@ -52,9 +52,10 @@ namespace googlemapmvc1.Controllers
                var statlist = connection.Query<Controles>(sqlstring);
 
                 Debug.WriteLine("aantal controles" + statlist.Count());
-                
+               
 
                 returnstatlist = statlist.ToList();
+                Debug.WriteLine(returnstatlist[5].typecontrol);
 
                 var hits = connection.Query<Typehits>(typehitsquery);
                 Debug.WriteLine("aantal hits"+ hits.Count());
@@ -71,10 +72,7 @@ namespace googlemapmvc1.Controllers
                 returnFullList = fullList.ToList();
                
 
-                var cartypes = (from x in returnFullList
-                                orderby x.HTQU_PatrollerMOBI_ID
-                                select x.HTQU_PatrollerMOBI_ID).Distinct();
-
+                
                 
                 var daytypes = (from x in returnFullList select x.HTQU_CreatedOn.Date).Distinct();
                 days = daytypes.ToList();
@@ -84,14 +82,14 @@ namespace googlemapmvc1.Controllers
 
                 var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
                 lphsdays = lphsdaytypes.ToList();
-               
-                
+
+                Debug.WriteLine(lphsdays.Count());
 
 
                 //list of different scantypes (e.g. abonnement,parkingmonitor,parkeon,sms,..)
-                var TypeControle = (from x in returnstatlist select x.LHDT_TypeControle).Distinct();
+                var TypeControle = (from x in returnstatlist select x.typecontrol).Distinct();
                 typecontrols = TypeControle.ToList();
-                Debug.WriteLine("typecontroles" + typecontrols[0] + typecontrols[1]);
+                Debug.WriteLine("typecontroles_bart" + typecontrols.Count());
 
                 //list of different hit types (0 : ongewerkte hit,1 : geannuleerde hit,2 :gevalideerde hit,4 : duplicate hit)
                 var hittype = (from x in returnhits select x.typehit).Distinct();
@@ -99,9 +97,7 @@ namespace googlemapmvc1.Controllers
 
 
 
-                //if more than one scancar
-                carTypesGuidList = cartypes.ToList();
-
+               
                 listsByPatrolId = returnFullList.
                     GroupBy(x => x.HTQU_PatrollerMOBI_ID).Select(g => g.ToList()).ToList();
 
