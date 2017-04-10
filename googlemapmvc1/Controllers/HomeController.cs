@@ -80,9 +80,17 @@ namespace googlemapmvc1.Controllers
 
                 //daytypes for lphs
 
+
+                DateTime vandaag = DateTime.Today;
+                DateTime gisteren = DateTime.Today.AddDays(-1);
+
                 var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
                 lphsdays = lphsdaytypes.ToList();
 
+
+
+                var lphstoday = from x in returnstatlist where x.LPHS_CreatedOn.Date== vandaag.Date select x;
+                var lphsyesterday = from x in returnstatlist where (x.LPHS_CreatedOn.Date == gisteren.Date) select x;
                 Debug.WriteLine(lphsdays.Count());
 
 
@@ -121,6 +129,7 @@ namespace googlemapmvc1.Controllers
 
             string statlistjson = serializer.Serialize(returnstatlist);
             string lphsdaysjson = serializer.Serialize(lphsdays);
+
             string typecontrolsjson = serializer.Serialize(typecontrols);
 
             string hitsjson = serializer.Serialize(returnhits);
