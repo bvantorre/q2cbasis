@@ -171,12 +171,12 @@ namespace googlemapmvc1.Controllers
 
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             serializer.MaxJsonLength = Int32.MaxValue;
-            string jsonlist = serializer.Serialize(returnFullList);
+           // string jsonlist = serializer.Serialize(returnFullList);
            
-            string daysjson = serializer.Serialize(days);
+           // string daysjson = serializer.Serialize(days);
 
-            string statlistjson = serializer.Serialize(returnstatlist);
-            string lphsdaysjson = serializer.Serialize(lphsdays);
+           // string statlistjson = serializer.Serialize(returnstatlist);
+            //string lphsdaysjson = serializer.Serialize(lphsdays);
 
             string typecontrolsjson = serializer.Serialize(typecontrols);
 
