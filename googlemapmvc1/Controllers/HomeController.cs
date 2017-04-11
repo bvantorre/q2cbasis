@@ -30,8 +30,13 @@ namespace googlemapmvc1.Controllers
             var controlsdezeweek = new List<Controles>();
             var controlsvorigeweek = new List<Controles>();
 
-           
-                       
+            var hitsvandaag = new List<Typehits>();
+            var hitsgisteren= new List<Typehits>();
+            var hitsdezeweek = new List<Typehits>();
+            var hitsvorigeweek= new List<Typehits>();
+
+
+
 
             var listsByPatrolId = new List<List<Carread>>();
             var days = new List<DateTime>();
@@ -88,8 +93,14 @@ namespace googlemapmvc1.Controllers
                 var controlstoday = from x in returnstatlist where x.LPHS_CreatedOn.Date== vandaag.Date select x;
                 var controlsyesterday = from x in returnstatlist where (x.LPHS_CreatedOn.Date == gisteren.Date) select x;
 
+                var hitstoday = from x in returnhits where x.HTQU_CreatedOn.Date == vandaag.Date select x;
+                var hitsyesterday= from x in returnhits where (x.HTQU_CreatedOn.Date == gisteren.Date) select x;
+
                 controlsvandaag = controlstoday.ToList();
                 controlsgisteren = controlsyesterday.ToList();
+
+                hitsvandaag = hitstoday.ToList();
+                hitsgisteren = hitsyesterday.ToList();
 
                 //this week+last week
                 DayOfWeek weekStart = DayOfWeek.Monday;
@@ -109,8 +120,20 @@ namespace googlemapmvc1.Controllers
                                        select x;
 
 
+                var hitsthisweek = from x in returnhits
+                                   where (startingDate.Date <= x.HTQU_CreatedOn.Date
+               && x.HTQU_CreatedOn.Date <= vandaag.Date)
+                                   select x;
+
+                var hitslastweek= from x in returnhits
+                                  where (previousWeekStart.Date <= x.HTQU_CreatedOn.Date &&
+                                  x.HTQU_CreatedOn.Date <= previousWeekEnd.Date)
+                                  select x;
+
                 controlsdezeweek = controlsthisweek.ToList();
                 controlsvorigeweek = controlslastweek.ToList();
+                hitsdezeweek = hitsthisweek.ToList();
+                hitsvorigeweek = hitslastweek.ToList();
 
 
 
@@ -162,6 +185,11 @@ namespace googlemapmvc1.Controllers
             string controlsdezeweekjson = serializer.Serialize(controlsdezeweek);
             string controlsvorigeweekjson = serializer.Serialize(controlsvorigeweek);
 
+            string hitsvandaagjson = serializer.Serialize(hitsvandaag);
+            string hitsgisterenjson = serializer.Serialize(hitsgisteren);
+            string hitsdezeweekjson= serializer.Serialize(hitsdezeweek);
+            string hitsvorigeweekjson = serializer.Serialize(hitsvorigeweek);
+
             string hitsjson = serializer.Serialize(returnhits);
             string hittypesjson = serializer.Serialize(hittypes);
 
@@ -177,6 +205,12 @@ namespace googlemapmvc1.Controllers
             ViewBag.Controlsgisterenjson = controlsgisterenjson;
             ViewBag.Controlsdezeweekjson = controlsdezeweekjson;
             ViewBag.Controlsvorigeweekjson = controlsvorigeweekjson;
+
+            ViewBag.Hitsvandaagjson = hitsvandaagjson;
+            ViewBag.Hitsgisterenjson = hitsgisterenjson;
+            ViewBag.Hitsdezeweekjson = hitsdezeweekjson;
+            ViewBag.Hitsvorigeweekjson = hitsvorigeweekjson;
+
 
             ViewBag.Hitsjson = hitsjson;
             ViewBag.Hittypesjson = hittypesjson;

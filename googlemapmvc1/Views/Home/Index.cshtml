@@ -122,7 +122,7 @@
 
     
 
-    </div>
+    
 
 
 
@@ -194,12 +194,6 @@
    
     <script type="text/javascript">
 
-
-
-
-
-
-
         var markers = @Html.Raw(ViewBag.Jsonlist);
        
         var days = @Html.Raw(ViewBag.Daysjson);
@@ -212,23 +206,33 @@
         var controlsgisteren=@Html.Raw(ViewBag.Controlsgisterenjson);
         var controlsdezeweek=@Html.Raw(ViewBag.Controlsdezeweekjson);
         var controlsvorigeweek=@Html.Raw(ViewBag.Controlsvorigeweekjson);
+
+        var hitsvandaag = @Html.Raw(ViewBag.Hitsvandaagjson);
+        var hitsgisteren=@Html.Raw(ViewBag.Hitsgisterenjson);
+        var hitsdezeweek=@Html.Raw(ViewBag.Hitsdezeweekjson);
+        var hitsvorigeweek=@Html.Raw(ViewBag.Hitsvorigeweekjson);
+
+
+        console.log("controles vandaag : " +controlsvandaag.length);
+        console.log("controles gisteren : "+controlsgisteren.length);
+        console.log("controles deze week : "+controlsdezeweek.length);
+        console.log("controles vorige week : "+controlsvorigeweek.length);
+
+        console.log("hits vandaag : "+ hitsvandaag.length);
+        console.log("hits gisteren : "+ hitsgisteren.length);
+        console.log("hits deze week : "+ hitsdezeweek.length);
+        console.log("hits vorige week :" + hitsvorigeweek.length)
+
         
-
-
        // var lphsdays =  @Html.Raw(ViewBag.Lphsdaysjson);
        // var lphsdayschron = lphsdays.reverse();
         var typecontrols = @Html.Raw(ViewBag.Typecontrolsjson);
        
-        //
-
         //var hits = @Html.Raw(ViewBag.Hitsjson);
         var hittypes = @Html.Raw(ViewBag.Hittypesjson);
-
         var colors = ["red","blue","yellow","green","orange"];
         var gmarkers = [];
         var vmarkers=[];
-
-
 
         var dicttypecontrol = {
 
@@ -239,20 +243,10 @@
 
         };
 
-
-
-
-             
-        
-        $("#rangeselect").append("<option value=" +1+">" + "gisteren"  + "</option>");
-        $("#rangeselect").append("<option value=" +2+">" + "deze week"  + "</option>");
-        $("#rangeselect").append("<option value=" +3+">" + "vorige week"  + "</option>");
+        $("#rangeselect").append("<option value=1>" + "gisteren"  + "</option>");
+        $("#rangeselect").append("<option value=2>" + "deze week"  + "</option>");
+        $("#rangeselect").append("<option value=3>" + "vorige week"  + "</option>");
       
-
-
-       
-
-
         var tablescantype = document.getElementById("controltable");
         var tablehittype = document.getElementById("hittable");
 
@@ -263,7 +257,7 @@
         for (i=0;i<typecontrols.length;i++) {
 
             var check = typecontrols[i];
-            console.log("typecontrole"+ check)
+           
             var label = dicttypecontrol[check];
             var counter=0;
             for (j=0;j<controlsvandaag.length;j++){
@@ -272,8 +266,6 @@
                     counter= counter+1}
 
             }
-
-
 
             var typeperc = ((counter/controlsvandaag.length)*100).toFixed(2);
             counttypecontrol.push(typeperc);
@@ -288,8 +280,6 @@
             cell2.innerHTML = counter;
             cell3.innerHTML = typeperc;
 
-
-
         };
         var rowtotal = tablescantype.insertRow(typecontrols.length+1);
         var celltotal1 = rowtotal.insertCell(0);
@@ -300,10 +290,8 @@
         celltotal2.innerHTML= controlsvandaag.length;
         celltotal3.innerHTML="100%";
 
-
         var canvascontrol = document.getElementById("piechartcanvascontrol")
         var ctxcontrol = canvascontrol.getContext("2d");
-
 
         var controlpieChart = new Chart (ctxcontrol, {
             type : 'pie',
@@ -343,8 +331,6 @@
 
         };
 
-
-
         var counttypehit =[];
         var labelsoftypehit =[];
 
@@ -353,13 +339,13 @@
             var checkhit = hittypes[i];
             var labelhit = dicttypehits[checkhit];
             var counterhit=0;
-            for (j=0;j<controlsvandaag.length;j++){
-                if (controlsvandaag[j].typehit==checkhit ) {
+            for (j=0;j<hitsvandaag.length;j++){
+                if (hitsvandaag[j].typehit==checkhit ) {
 
                     counterhit= counterhit+1}
 
             }
-            var hittypeperc = ((counterhit/hits.length)*100).toFixed(2);
+            var hittypeperc = ((counterhit/hitsvandaag.length)*100).toFixed(2);
             counttypehit.push(hittypeperc);
             labelsoftypehit.push(labelhit);
             var rowhit = tablehittype.insertRow(i+1);
@@ -378,7 +364,7 @@
         var celltotalhit3=rowtotalhit.insertCell(2);
 
         celltotalhit1.innerHTML="Totaal";
-        celltotalhit2.innerHTML= controlsvandaag.length;
+        celltotalhit2.innerHTML= hitsvandaag.length;
         celltotalhit3.innerHTML="100%";
 
 
@@ -418,24 +404,11 @@
 
             }}) ;
 
-
-
-
-
-
-
-
-
-
-       
-
-        //function for monthyearselector
+        //function for rangeselector
         $('#rangeselect').on('change',function() {
 
             rangeselect = this.value;
-           
-
-           
+            console.log(rangeselect);
             //remove all rows except th from table with ratio type control
             var rowCount=tablescantype.rows.length;
             for (var x=rowCount-1;x>0;x--) {
@@ -448,54 +421,65 @@
                 tablehittype.deleteRow(x);
             }
 
-
-
-            var checkparameterlist = [];   // 
+           
             var labeldict = {};
             var lengte;
-            var checklist =[];
+            var lengtehit;
+            var checklistcontrol =[];
+            var checklisthit=[];
+                       
+            checklistcontrol.length=0;
+            checklisthit.length=0;
 
-
-            if (rangeselect=0)
-            {var checkparameterlist = controlsvandaag;
+            console.log(rangeselect);
+            if (rangeselect==0)
+            {
                 var lengte=controlsvandaag.length;
-                var checklist=controlsvandaag;}
+                var checklistcontrol=controlsvandaag;
+                var lengtehit=hitsvandaag.length
+                var checklisthit=hitsvandaag;
+            }
 
             else
-                if (rangeselect=1)
-                {var checkparameterlist = controlsgisteren;
+                if (rangeselect==1)
+                {
                     var lengte=controlsgisteren.length;
-                    var checklist=controlsgisteren;
+                    var checklistcontrol=controlsgisteren;
+                    var lengtehit=hitsgisteren.length;
+                    var checklisthit=hitsgisteren;
                 }
                 else 
-                    if (rangeselect=2) {
-                        var checkparameterlist=controlsdezeweek;
+                    if (rangeselect==2) {
+                        
                         var lengte=controlsdezeweek.length;
-                        var checklist=controlsdezeweek;
+                        var checklistcontrol=controlsdezeweek;
+                        var lengtehit=hitsdezeweek.length;
+                        var checklisthit=hitsdezeweek;
+                        console.log("controlsdezeweek"+checklistcontrol.length)
                     }
                     else
-                        if (rangeselect=3) {
-                            var checkparameterlist=controlsvorigeweek;
+                        if (rangeselect==3) {
+                           
                             var lengte=controlsvorigeweek.length;
-                            var checklist=controlsvorigeweek;
+                            var checklistcontrol=controlsvorigeweek;
+                            var lengtehit=hitsvorigeweek.length;
+                            var checklisthit=hitsvorigeweek;
                         }
             
 
-
             //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
-            var checkparameterlist= typecontrols;
-            var labeldict=dicytypecontrol;
+            
 
             var counttypecontrol =[];
             var labelsoftypecontrols =[];
 
             for (i=0;i<typecontrols.length;i++) {
 
-                var check = checkparameterlist[i];
-                var label = labeldict[check];
+                var check = typecontrols[i];
+                var label = dicttypecontrol[check];
                 var counter=0;
                 for (j=0;j<lengte;j++){
-                    if ((checklist[j].typecontrol==check) || (checklist[j].typecontrol===a))
+                    if ((checklistcontrol[j].typecontrol==check) || (checklistcontrol[j].typecontrol==a))
 
                         counter= counter+1
 
@@ -505,9 +489,6 @@
                 labelsoftypecontrols.push(label);
                 //code to make table dynamically
 
-
-
-
                 var row = tablescantype.insertRow(i+1);
                 var cell1 = row.insertCell(0);
                 var cell2 = row.insertCell(1);
@@ -515,8 +496,6 @@
                 cell1.innerHTML = label;
                 cell2.innerHTML = counter;
                 cell3.innerHTML = typeperc;
-
-
 
             };
 
@@ -530,13 +509,7 @@
             celltotal3.innerHTML="100%";
 
 
-
-
-
             //code to make piechart control type dynamically
-
-
-
 
             var controlpieChart = new Chart (ctxcontrol, {
                 type : 'pie',
@@ -576,7 +549,7 @@
 
             };
 
-
+           
 
             var counttypehit =[];
             var labelsoftypehit =[];
@@ -584,17 +557,16 @@
             for (i=0;i<hittypes.length;i++) {
 
                 var checkhit = hittypes[i];
-                console.log(checkhit);
                 var labelhit = dicttypehits[checkhit];
                 var counterhit=0;
-                for (j=0;j<hitselect.length;j++){
-                    if (hitselect[j].typehit==checkhit ) {
+                for (j=0;j<lengtehit;j++){
+                    if (checklisthit[j].typehit==checkhit ) {
 
                         counterhit= counterhit+1}
 
                 }
-                console.log(counterhit);
-                var hittypeperc = ((counterhit/hitselect.length)*100).toFixed(2);
+               
+                var hittypeperc = ((counterhit/lengtehit)*100).toFixed(2);
                 counttypehit.push(hittypeperc);
                 labelsoftypehit.push(labelhit);
 
@@ -615,7 +587,7 @@
             var celltotalhit3=rowtotalhit.insertCell(2);
 
             celltotalhit1.innerHTML="Totaal";
-            celltotalhit2.innerHTML= hitselect.length;
+            celltotalhit2.innerHTML= lengtehit;
             celltotalhit3.innerHTML="100%";
 
             var canvas = document.getElementById("piechartcanvashits")
@@ -657,27 +629,7 @@
 
 
 
-
-
-
-
-
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     </script>
 </body>
