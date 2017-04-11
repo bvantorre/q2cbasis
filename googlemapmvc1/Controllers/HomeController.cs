@@ -81,13 +81,10 @@ namespace googlemapmvc1.Controllers
 
 
                 //code for filter controls 
-
-
+                
                 DateTime vandaag = DateTime.Today;
                 DateTime gisteren = DateTime.Today.AddDays(-1);
-
-                //var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
-                //lphsdays = lphsdaytypes.ToList();
+                             
                 
 
                 var controlstoday = from x in returnstatlist where x.LPHS_CreatedOn.Date== vandaag.Date select x;
@@ -151,16 +148,6 @@ namespace googlemapmvc1.Controllers
                 var hittype = (from x in returnhits select x.typehit).Distinct();
                 hittypes = hittype.ToList();
 
-
-
-               
-                listsByPatrolId = returnFullList.
-                    GroupBy(x => x.HTQU_PatrollerMOBI_ID).Select(g => g.ToList()).ToList();
-
-
-           
-               
-
             }
             catch (Exception ex)
             {
@@ -171,12 +158,7 @@ namespace googlemapmvc1.Controllers
 
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             serializer.MaxJsonLength = Int32.MaxValue;
-           // string jsonlist = serializer.Serialize(returnFullList);
-           
-           // string daysjson = serializer.Serialize(days);
-
-           // string statlistjson = serializer.Serialize(returnstatlist);
-            //string lphsdaysjson = serializer.Serialize(lphsdays);
+          
 
             string typecontrolsjson = serializer.Serialize(typecontrols);
 
@@ -193,12 +175,7 @@ namespace googlemapmvc1.Controllers
             string hitsjson = serializer.Serialize(returnhits);
             string hittypesjson = serializer.Serialize(hittypes);
 
-            ViewBag.Jsonlist = jsonlist;
-          
-            ViewBag.Daysjson = daysjson;
-
-            ViewBag.Statlistjson = statlistjson;
-            ViewBag.Lphsdaysjson = lphsdaysjson;
+           
             ViewBag.Typecontrolsjson = typecontrolsjson;
 
             ViewBag.Controlsvandaagjson = controlsvandaagjson;
@@ -210,9 +187,7 @@ namespace googlemapmvc1.Controllers
             ViewBag.Hitsgisterenjson = hitsgisterenjson;
             ViewBag.Hitsdezeweekjson = hitsdezeweekjson;
             ViewBag.Hitsvorigeweekjson = hitsvorigeweekjson;
-
-
-            ViewBag.Hitsjson = hitsjson;
+            
             ViewBag.Hittypesjson = hittypesjson;
 
 
