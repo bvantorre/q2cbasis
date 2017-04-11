@@ -12,8 +12,6 @@
 
     <link rel="stylesheet" href="~/Content/bootstrap.css" />
 
-    <link rel="stylesheet" href="~/Content/daterangepicker.css" />
-    <script src="~/Scripts/daterangepicker.js"></script>
     <script src="~/Scripts/chart.js"></script>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
@@ -36,7 +34,7 @@
 
    input {width : 150px}
 
-   #monthyearselector {
+   #rangeselector {
               border : 1px;border-style : solid; border-color : black;
               height : 100px;  border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
@@ -47,20 +45,7 @@
    }
 
 
-   #rangepicker {
-      
-              background-color : #024282;
-              height : 40px; border-radius : 10px;
-              font-family: 'Open Sans', sans-serif;
-              font-size : 12px;
-              padding : 6px 1px;
-              margin-left : 30px
-
-
-
-   }
-
-
+  
     
     select { border-radius : 10px; font-family: 'Open Sans', sans-serif;
               font-size : 12px;
@@ -135,12 +120,7 @@
 
     </nav>
 
-    <div class="row">
-        <div id="rangepicker">
-            <input type="text" name="daterange"  value="01/01/2015 1:30 PM - 01/01/2015 2:00 PM" />
-
-
-        </div>
+    
 
     </div>
 
@@ -151,10 +131,10 @@
 
 
         <div class="col-sm-4">
-            <div id="monthyearselector">
+            <div id="rangeselector">
                 <p>Kies periode voor data analyse </p>
-                <select name="monthyearselect" id="monthyearselect">
-                    <option value="">up to now</option>
+                <select name="rangeselect" id="rangeselect">
+                    <option value="0">vandaag</option>
 
                 </select>
             </div>
@@ -216,34 +196,32 @@
 
 
 
-$(function() {
-    $('input[name="daterange"]').daterangepicker({
-        timePicker: true,
-        timePickerIncrement: 30,
-        locale: {
-            format: 'MM/DD/YYYY'
-        }
-    });
-});
-   
+
 
 
 
         var markers = @Html.Raw(ViewBag.Jsonlist);
-        var patrollers =@Html.Raw(ViewBag.Patrollistjson);
+       
         var days = @Html.Raw(ViewBag.Daysjson);
         var dayschron = days.reverse();
 
         //data for chart type of scans
-        var listlphsids = @Html.Raw(ViewBag.Statlistjson);
+        //var listlphsids = @Html.Raw(ViewBag.Statlistjson);
+
+        var controlsvandaag = @Html.Raw(ViewBag.Controlsvandaagjson);
+        var controlsgisteren=@Html.Raw(ViewBag.Controlsgisterenjson);
+        var controlsdezeweek=@Html.Raw(ViewBag.Controlsdezeweekjson);
+        var controlsvorigeweek=@Html.Raw(ViewBag.Controlsvorigeweekjson);
         
-        var lphsdays =  @Html.Raw(ViewBag.Lphsdaysjson);
-        var lphsdayschron = lphsdays.reverse();
+
+
+       // var lphsdays =  @Html.Raw(ViewBag.Lphsdaysjson);
+       // var lphsdayschron = lphsdays.reverse();
         var typecontrols = @Html.Raw(ViewBag.Typecontrolsjson);
-        console.log("lengte typecontols="+ typecontrols.length);
+       
         //
 
-        var hits = @Html.Raw(ViewBag.Hitsjson);
+        //var hits = @Html.Raw(ViewBag.Hitsjson);
         var hittypes = @Html.Raw(ViewBag.Hittypesjson);
 
         var colors = ["red","blue","yellow","green","orange"];
@@ -254,51 +232,25 @@ $(function() {
 
         var dicttypecontrol = {
 
-        0 :'Parking Monitor',"NULL" : 'Parking Monitor',1 :'Uurrooster', 2: 'SMS', 3: 'Abonnement',
-			5: 'Tweede RB',7: 'Bevroren Nummerplaat', 20: 'Sensibilisering', 100: 'YellowBrick', 110: 'PayByPhone',
-			120: 'Parkeon', 130: 'Mobigo', 140: 'Presto', 150: 'MobileFor', 160: 'ParkMobile', 170: 'Extenso',
-			180: 'CEVI', 190: 'Hectronic', 200: 'Parkare', 999: 'TOTAAL'
-
-        }
-
-
-
-        monthyear = [];
-
-        //data for monthselector
-        for (i=0;i<listlphsids.length;i++) {
-            var monthyearformat1 = moment(listlphsids[i].LPHS_CreatedOn).format("MM/YYYY");
-            monthyear.push(monthyearformat1);
-        };
-
-        monthyear_dist = GetUnique(monthyear);
-
-
-        // function to get unique values from array
-        function GetUnique(inputArray)
-        {
-            var outputArray = [];
-
-            for (var i = 0; i < inputArray.length; i++)
-            {
-                if ((jQuery.inArray(inputArray[i], outputArray)) == -1)
-                {
-                    outputArray.push(inputArray[i]);
-                }
-            }
-
-            return outputArray;
-        };
-
-
-        //select values for monthyearselector
-        for (i=0;i<monthyear_dist.length;i++) {
-
-
-            $("#monthyearselect").append("<option value=" + monthyear_dist[i] +">" + monthyear_dist[i]  + "</option>")
+            0 :'Parking Monitor',"NULL" : 'Parking Monitor',1 :'Uurrooster', 2: 'SMS', 3: 'Abonnement',
+            5: 'Tweede RB',7: 'Bevroren Nummerplaat', 20: 'Sensibilisering', 100: 'YellowBrick', 110: 'PayByPhone',
+            120: 'Parkeon', 130: 'Mobigo', 140: 'Presto', 150: 'MobileFor', 160: 'ParkMobile', 170: 'Extenso',
+            180: 'CEVI', 190: 'Hectronic', 200: 'Parkare', 999: 'TOTAAL'
 
         };
 
+
+
+
+             
+        
+        $("#rangeselect").append("<option value=" +1+">" + "gisteren"  + "</option>");
+        $("#rangeselect").append("<option value=" +2+">" + "deze week"  + "</option>");
+        $("#rangeselect").append("<option value=" +3+">" + "vorige week"  + "</option>");
+      
+
+
+       
 
 
         var tablescantype = document.getElementById("controltable");
@@ -314,8 +266,8 @@ $(function() {
             console.log("typecontrole"+ check)
             var label = dicttypecontrol[check];
             var counter=0;
-            for (j=0;j<listlphsids.length;j++){
-                if ((listlphsids[j].typecontrol==check) || (listlphsids[j].typecontrol===a)){
+            for (j=0;j<controlsvandaag.length;j++){
+                if ((controlsvandaag[j].typecontrol==check) || (controlsvandaag[j].typecontrol===a)){
 
                     counter= counter+1}
 
@@ -323,7 +275,7 @@ $(function() {
 
 
 
-            var typeperc = ((counter/listlphsids.length)*100).toFixed(2);
+            var typeperc = ((counter/controlsvandaag.length)*100).toFixed(2);
             counttypecontrol.push(typeperc);
             labelsoftypecontrols.push(label);
 
@@ -343,12 +295,12 @@ $(function() {
         var celltotal1 = rowtotal.insertCell(0);
         var celltotal2= rowtotal.insertCell(1);
         var celltotal3=rowtotal.insertCell(2);
-       
+
         celltotal1.innerHTML="Totaal";
-        celltotal2.innerHTML= listlphsids.length; 
+        celltotal2.innerHTML= controlsvandaag.length;
         celltotal3.innerHTML="100%";
 
-      
+
         var canvascontrol = document.getElementById("piechartcanvascontrol")
         var ctxcontrol = canvascontrol.getContext("2d");
 
@@ -392,7 +344,7 @@ $(function() {
         };
 
 
-       
+
         var counttypehit =[];
         var labelsoftypehit =[];
 
@@ -401,8 +353,8 @@ $(function() {
             var checkhit = hittypes[i];
             var labelhit = dicttypehits[checkhit];
             var counterhit=0;
-            for (j=0;j<hits.length;j++){
-                if (hits[j].typehit==checkhit ) {
+            for (j=0;j<controlsvandaag.length;j++){
+                if (controlsvandaag[j].typehit==checkhit ) {
 
                     counterhit= counterhit+1}
 
@@ -424,9 +376,9 @@ $(function() {
         var celltotalhit1 = rowtotalhit.insertCell(0);
         var celltotalhit2= rowtotalhit.insertCell(1);
         var celltotalhit3=rowtotalhit.insertCell(2);
-       
+
         celltotalhit1.innerHTML="Totaal";
-        celltotalhit2.innerHTML= hits.length; 
+        celltotalhit2.innerHTML= controlsvandaag.length;
         celltotalhit3.innerHTML="100%";
 
 
@@ -466,27 +418,24 @@ $(function() {
 
             }}) ;
 
-        
 
 
 
 
 
-      
 
 
-        var listlphsidsselect =[];
-        var hitselect =[];
 
+
+       
 
         //function for monthyearselector
-        $('#monthyearselect').on('change',function() {
+        $('#rangeselect').on('change',function() {
 
-            monthyearselect = this.value;
+            rangeselect = this.value;
+           
 
-            
-            listlphsidsselect.length=0;
-            hitselect.length=0;
+           
             //remove all rows except th from table with ratio type control
             var rowCount=tablescantype.rows.length;
             for (var x=rowCount-1;x>0;x--) {
@@ -501,73 +450,57 @@ $(function() {
 
 
 
-
-            //monthyear filter for type control
-            for (i=0; i<listlphsids.length; i++) {
-
-
-                if( (moment(listlphsids[i].LPHS_CreatedOn).format("MM/YYYY")== monthyearselect)
-                    || (monthyearselect.length==0)
+            var checkparameterlist = [];   // 
+            var labeldict = {};
+            var lengte;
+            var checklist =[];
 
 
-                    )  {
+            if (rangeselect=0)
+            {var checkparameterlist = controlsvandaag;
+                var lengte=controlsvandaag.length;
+                var checklist=controlsvandaag;}
 
-                    listlphsidsselect.push(listlphsids[i])
-
+            else
+                if (rangeselect=1)
+                {var checkparameterlist = controlsgisteren;
+                    var lengte=controlsgisteren.length;
+                    var checklist=controlsgisteren;
                 }
-
-
-
-
-            };
-           
-
-
-            // monthyear filter for hits
-            for (i=0; i<hits.length; i++) {
-
-
-                if( (moment(hits[i].HTQU_CreatedOn).format("MM/YYYY")== monthyearselect)
-                    || (monthyearselect.length==0)
-
-
-                    )  {
-
-                    hitselect.push(hits[i])
-
-                }
-
-
-
-
-            };
-
-
-
-
-
-
-
-
+                else 
+                    if (rangeselect=2) {
+                        var checkparameterlist=controlsdezeweek;
+                        var lengte=controlsdezeweek.length;
+                        var checklist=controlsdezeweek;
+                    }
+                    else
+                        if (rangeselect=3) {
+                            var checkparameterlist=controlsvorigeweek;
+                            var lengte=controlsvorigeweek.length;
+                            var checklist=controlsvorigeweek;
+                        }
+            
 
 
             //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
+            var checkparameterlist= typecontrols;
+            var labeldict=dicytypecontrol;
 
             var counttypecontrol =[];
             var labelsoftypecontrols =[];
 
             for (i=0;i<typecontrols.length;i++) {
 
-                var check = typecontrols[i];
-                var label = dicttypecontrol[check];
+                var check = checkparameterlist[i];
+                var label = labeldict[check];
                 var counter=0;
-                for (j=0;j<listlphsidsselect.length;j++){
-                    if ((listlphsids[j].typecontrol==check) || (listlphsids[j].typecontrol===a))
+                for (j=0;j<lengte;j++){
+                    if ((checklist[j].typecontrol==check) || (checklist[j].typecontrol===a))
 
                         counter= counter+1
 
                 }
-                var typeperc = ((counter/listlphsidsselect.length)*100).toFixed(2);
+                var typeperc = ((counter/lengte)*100).toFixed(2);
                 counttypecontrol.push(typeperc);
                 labelsoftypecontrols.push(label);
                 //code to make table dynamically
@@ -591,9 +524,9 @@ $(function() {
             var celltotal1 = rowtotal.insertCell(0);
             var celltotal2= rowtotal.insertCell(1);
             var celltotal3=rowtotal.insertCell(2);
-       
+
             celltotal1.innerHTML="Totaal";
-            celltotal2.innerHTML= listlphsidsselect.length; 
+            celltotal2.innerHTML= lengte;
             celltotal3.innerHTML="100%";
 
 
@@ -601,8 +534,8 @@ $(function() {
 
 
             //code to make piechart control type dynamically
-           
-         
+
+
 
 
             var controlpieChart = new Chart (ctxcontrol, {
@@ -644,7 +577,7 @@ $(function() {
             };
 
 
-       
+
             var counttypehit =[];
             var labelsoftypehit =[];
 
@@ -680,15 +613,15 @@ $(function() {
             var celltotalhit1 = rowtotalhit.insertCell(0);
             var celltotalhit2= rowtotalhit.insertCell(1);
             var celltotalhit3=rowtotalhit.insertCell(2);
-       
+
             celltotalhit1.innerHTML="Totaal";
-            celltotalhit2.innerHTML= hitselect.length; 
+            celltotalhit2.innerHTML= hitselect.length;
             celltotalhit3.innerHTML="100%";
 
             var canvas = document.getElementById("piechartcanvashits")
             var ctx = canvas.getContext("2d");
 
-           
+
 
             var hitpieChart = new Chart (ctxhit, {
                 type : 'pie',
@@ -740,7 +673,7 @@ $(function() {
 
 
 
-       
+
 
 
 

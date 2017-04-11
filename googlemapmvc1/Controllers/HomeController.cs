@@ -24,10 +24,15 @@ namespace googlemapmvc1.Controllers
             var returnFullList = new List<Carread>();
             var returnstatlist = new List<Controles>();
             var returnhits = new List<Typehits>();
+
+            var controlsvandaag = new List<Controles>();
+            var controlsgisteren = new List<Controles>();
+            var controlsdezeweek = new List<Controles>();
+            var controlsvorigeweek = new List<Controles>();
+
            
-           
-            var returnPatrollist = new List<Patrollermodel>();
-            var carTypesGuidList = new List<Guid>();
+                       
+
             var listsByPatrolId = new List<List<Carread>>();
             var days = new List<DateTime>();
             var lphsdays = new List<DateTime>();
@@ -60,37 +65,57 @@ namespace googlemapmvc1.Controllers
                 var hits = connection.Query<Typehits>(typehitsquery);
                 Debug.WriteLine("aantal hits"+ hits.Count());
 
-
                 
-
                 returnhits = hits.ToList();
-               
-
-
-
-
                 returnFullList = fullList.ToList();
                
-
                 
                 
                 var daytypes = (from x in returnFullList select x.HTQU_CreatedOn.Date).Distinct();
                 days = daytypes.ToList();
 
 
-                //daytypes for lphs
+                //code for filter controls 
 
 
                 DateTime vandaag = DateTime.Today;
                 DateTime gisteren = DateTime.Today.AddDays(-1);
 
-                var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
-                lphsdays = lphsdaytypes.ToList();
+                //var lphsdaytypes = (from x in returnstatlist select x.LPHS_CreatedOn.Date).Distinct();
+                //lphsdays = lphsdaytypes.ToList();
+                
+
+                var controlstoday = from x in returnstatlist where x.LPHS_CreatedOn.Date== vandaag.Date select x;
+                var controlsyesterday = from x in returnstatlist where (x.LPHS_CreatedOn.Date == gisteren.Date) select x;
+
+                controlsvandaag = controlstoday.ToList();
+                controlsgisteren = controlsyesterday.ToList();
+
+                //this week+last week
+                DayOfWeek weekStart = DayOfWeek.Monday;
+                DateTime startingDate = DateTime.Today;
+
+                while (startingDate.DayOfWeek != weekStart)
+                    startingDate = startingDate.AddDays(-1);
+
+                DateTime previousWeekStart = startingDate.AddDays(-7);
+                DateTime previousWeekEnd = startingDate.AddDays(-1);
+
+                var controlsthisweek = from x in returnstatlist where (startingDate.Date <= x.LPHS_CreatedOn.Date 
+                                       && x.LPHS_CreatedOn.Date <= vandaag.Date) select x;
+                var controlslastweek = from x in returnstatlist
+                                       where (previousWeekStart.Date <= x.LPHS_CreatedOn.Date &&
+                                       x.LPHS_CreatedOn.Date <= previousWeekEnd.Date)
+                                       select x;
+
+
+                controlsdezeweek = controlsthisweek.ToList();
+                controlsvorigeweek = controlslastweek.ToList();
 
 
 
-                var lphstoday = from x in returnstatlist where x.LPHS_CreatedOn.Date== vandaag.Date select x;
-                var lphsyesterday = from x in returnstatlist where (x.LPHS_CreatedOn.Date == gisteren.Date) select x;
+
+
                 Debug.WriteLine(lphsdays.Count());
 
 
@@ -124,7 +149,7 @@ namespace googlemapmvc1.Controllers
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             serializer.MaxJsonLength = Int32.MaxValue;
             string jsonlist = serializer.Serialize(returnFullList);
-            string patrollistjson = serializer.Serialize(carTypesGuidList);
+           
             string daysjson = serializer.Serialize(days);
 
             string statlistjson = serializer.Serialize(returnstatlist);
@@ -132,16 +157,26 @@ namespace googlemapmvc1.Controllers
 
             string typecontrolsjson = serializer.Serialize(typecontrols);
 
+            string controlsvandaagjson = serializer.Serialize(controlsvandaag);
+            string controlsgisterenjson = serializer.Serialize(controlsgisteren);
+            string controlsdezeweekjson = serializer.Serialize(controlsdezeweek);
+            string controlsvorigeweekjson = serializer.Serialize(controlsvorigeweek);
+
             string hitsjson = serializer.Serialize(returnhits);
             string hittypesjson = serializer.Serialize(hittypes);
 
             ViewBag.Jsonlist = jsonlist;
-            ViewBag.Patrollistjson = patrollistjson;
+          
             ViewBag.Daysjson = daysjson;
 
             ViewBag.Statlistjson = statlistjson;
             ViewBag.Lphsdaysjson = lphsdaysjson;
             ViewBag.Typecontrolsjson = typecontrolsjson;
+
+            ViewBag.Controlsvandaagjson = controlsvandaagjson;
+            ViewBag.Controlsgisterenjson = controlsgisterenjson;
+            ViewBag.Controlsdezeweekjson = controlsdezeweekjson;
+            ViewBag.Controlsvorigeweekjson = controlsvorigeweekjson;
 
             ViewBag.Hitsjson = hitsjson;
             ViewBag.Hittypesjson = hittypesjson;
