@@ -30,10 +30,16 @@ namespace googlemapmvc1.Controllers
             var controlsdezeweek = new List<Controles>();
             var controlsvorigeweek = new List<Controles>();
 
+            var controlsdezemaand = new List<Controles>();
+            var controlsvorigemaand = new List<Controles>();
+
             var hitsvandaag = new List<Typehits>();
             var hitsgisteren= new List<Typehits>();
             var hitsdezeweek = new List<Typehits>();
             var hitsvorigeweek= new List<Typehits>();
+
+            var hitsdezemaand = new List<Typehits>();
+            var hitsvorigemaand = new List<Typehits>();
 
 
 
@@ -87,17 +93,12 @@ namespace googlemapmvc1.Controllers
                              
                 
 
-                var controlstoday = from x in returnstatlist where x.LPHS_CreatedOn.Date== vandaag.Date select x;
-                var controlsyesterday = from x in returnstatlist where (x.LPHS_CreatedOn.Date == gisteren.Date) select x;
+               
 
-                var hitstoday = from x in returnhits where x.HTQU_CreatedOn.Date == vandaag.Date select x;
-                var hitsyesterday= from x in returnhits where (x.HTQU_CreatedOn.Date == gisteren.Date) select x;
+               
+                
 
-                controlsvandaag = controlstoday.ToList();
-                controlsgisteren = controlsyesterday.ToList();
-
-                hitsvandaag = hitstoday.ToList();
-                hitsgisteren = hitsyesterday.ToList();
+               
 
                 //this week+last week
                 DayOfWeek weekStart = DayOfWeek.Monday;
@@ -109,30 +110,62 @@ namespace googlemapmvc1.Controllers
                 DateTime previousWeekStart = startingDate.AddDays(-7);
                 DateTime previousWeekEnd = startingDate.AddDays(-1);
 
+                var controlstoday = from x in returnstatlist where x.LPHS_CreatedOn.Date == vandaag.Date select x;
+                var controlsyesterday = from x in returnstatlist where (x.LPHS_CreatedOn.Date == gisteren.Date) select x;
+
                 var controlsthisweek = from x in returnstatlist where (startingDate.Date <= x.LPHS_CreatedOn.Date 
                                        && x.LPHS_CreatedOn.Date <= vandaag.Date) select x;
                 var controlslastweek = from x in returnstatlist
                                        where (previousWeekStart.Date <= x.LPHS_CreatedOn.Date &&
                                        x.LPHS_CreatedOn.Date <= previousWeekEnd.Date)
                                        select x;
+                var controlsthismonth = from x in returnstatlist
+                                        where ((x.LPHS_CreatedOn.Month==vandaag.Month) && (x.LPHS_CreatedOn.Year == vandaag.Year))
+                                        select x;
+                var controlslastmonth = from x in returnstatlist
+                                        where ((x.LPHS_CreatedOn.Month == (vandaag.Month-1)) && (x.LPHS_CreatedOn.Year == vandaag.Year ||
+                                        x.LPHS_CreatedOn.Year==(vandaag.Year-1)))
+                                        select x;
+
+               
 
 
-                var hitsthisweek = from x in returnhits
-                                   where (startingDate.Date <= x.HTQU_CreatedOn.Date
-               && x.HTQU_CreatedOn.Date <= vandaag.Date)
-                                   select x;
+
+
+                var hitstoday = from x in returnhits where x.HTQU_CreatedOn.Date == vandaag.Date select x;
+
+                var hitsyesterday = from x in returnhits where (x.HTQU_CreatedOn.Date == gisteren.Date) select x;
+                
+                var hitsthisweek = from x in returnhits where (startingDate.Date <= x.HTQU_CreatedOn.Date
+                                   && x.HTQU_CreatedOn.Date <= vandaag.Date) select x;
 
                 var hitslastweek= from x in returnhits
                                   where (previousWeekStart.Date <= x.HTQU_CreatedOn.Date &&
                                   x.HTQU_CreatedOn.Date <= previousWeekEnd.Date)
                                   select x;
 
+                var hitsthismonth= from x in returnhits
+                                   where ((x.HTQU_CreatedOn.Month == vandaag.Month) && (x.HTQU_CreatedOn.Year == vandaag.Year))
+                                   select x;
+                var hitslastmonth = from x in returnhits
+                                    where ((x.HTQU_CreatedOn.Month == (vandaag.Month - 1)) && (x.HTQU_CreatedOn.Year == vandaag.Year ||
+                                    x.HTQU_CreatedOn.Year == (vandaag.Year - 1)))
+                                    select x;
+
+
+                controlsvandaag = controlstoday.ToList();
+                controlsgisteren = controlsyesterday.ToList();
                 controlsdezeweek = controlsthisweek.ToList();
                 controlsvorigeweek = controlslastweek.ToList();
+                controlsdezemaand = controlsthismonth.ToList();
+                controlsvorigemaand = controlslastmonth.ToList();
+
                 hitsdezeweek = hitsthisweek.ToList();
                 hitsvorigeweek = hitslastweek.ToList();
-
-
+                hitsvandaag = hitstoday.ToList();
+                hitsgisteren = hitsyesterday.ToList();
+                hitsdezemaand = hitsthismonth.ToList();
+                hitsvorigemaand = hitslastmonth.ToList();
 
 
 
@@ -166,11 +199,16 @@ namespace googlemapmvc1.Controllers
             string controlsgisterenjson = serializer.Serialize(controlsgisteren);
             string controlsdezeweekjson = serializer.Serialize(controlsdezeweek);
             string controlsvorigeweekjson = serializer.Serialize(controlsvorigeweek);
+            string controlsdezemaandjson = serializer.Serialize(controlsdezemaand);
+            string controlsvorigemaandjson = serializer.Serialize(controlsvorigemaand);
 
             string hitsvandaagjson = serializer.Serialize(hitsvandaag);
             string hitsgisterenjson = serializer.Serialize(hitsgisteren);
             string hitsdezeweekjson= serializer.Serialize(hitsdezeweek);
             string hitsvorigeweekjson = serializer.Serialize(hitsvorigeweek);
+            string hitsdezemaandjson = serializer.Serialize(hitsdezemaand);
+            string hitsvorigemaandjson = serializer.Serialize(hitsvorigemaand);
+
 
             string hitsjson = serializer.Serialize(returnhits);
             string hittypesjson = serializer.Serialize(hittypes);
@@ -182,12 +220,17 @@ namespace googlemapmvc1.Controllers
             ViewBag.Controlsgisterenjson = controlsgisterenjson;
             ViewBag.Controlsdezeweekjson = controlsdezeweekjson;
             ViewBag.Controlsvorigeweekjson = controlsvorigeweekjson;
+            ViewBag.Controlsdezemaandjson = controlsdezemaandjson;
+            ViewBag.Controlsvorigemaandjson = controlsvorigemaandjson;
 
             ViewBag.Hitsvandaagjson = hitsvandaagjson;
             ViewBag.Hitsgisterenjson = hitsgisterenjson;
             ViewBag.Hitsdezeweekjson = hitsdezeweekjson;
             ViewBag.Hitsvorigeweekjson = hitsvorigeweekjson;
-            
+            ViewBag.Hitsdezemaandjson = hitsdezemaandjson;
+            ViewBag.Hitsvorigemaandjson = hitsvorigemaandjson;
+
+
             ViewBag.Hittypesjson = hittypesjson;
 
 

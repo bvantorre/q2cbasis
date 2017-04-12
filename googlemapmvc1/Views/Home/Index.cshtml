@@ -39,11 +39,12 @@
               height : 100px;  border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
               font-size : 12px;
-              padding : 6px; background-color:#F2F6F7;
+              padding : 2px; background-color:#F2F6F7;
 
 
    }
-
+  
+  
 
   
     
@@ -63,7 +64,7 @@
     }
 
 
-  #tablecontrol {
+  #tablecontrol,#customrange {
               border : 1px;border-style : solid; border-color : black;
               height : 200px;  border-radius : 10px;
               font-family: 'Open Sans', sans-serif;
@@ -126,19 +127,30 @@
 
 
 
-
+    <div class="container">
     <div class="row">
 
 
-        <div class="col-sm-4">
-            <div id="rangeselector">
-                <p>Kies periode voor data analyse </p>
-                <select name="rangeselect" id="rangeselect">
-                    <option value="0">vandaag</option>
+       
+            <div class="col-sm-4">
+                <div id="rangeselector">
+                    <p>Kies periode voor data analyse </p>
+                    <div id="selectdiv">
+                       
+                        <select name="rangeselect" id="rangeselect">
+                            <option value="0">vandaag</option>
 
-                </select>
+                        </select>
+                       
+                    </div>
+                   
+
+                </div>
+               
+
             </div>
-        </div>
+         
+       
 
         <div class="col-sm-4">
             <div id="piechartcontrol">
@@ -159,7 +171,10 @@
 
 
     <div class="row">
-        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+            <div id="customrange"> <p>"dit is een test"</p></div>
+
+        </div>
         <div class="col-sm-4">
             <div id="tablecontrol">
                 <table id="controltable">
@@ -190,38 +205,47 @@
         </div>
        
     </div>
-
+    </div>
    
     <script type="text/javascript">
- 
+
 
         var controlsvandaag = @Html.Raw(ViewBag.Controlsvandaagjson);
         var controlsgisteren=@Html.Raw(ViewBag.Controlsgisterenjson);
         var controlsdezeweek=@Html.Raw(ViewBag.Controlsdezeweekjson);
         var controlsvorigeweek=@Html.Raw(ViewBag.Controlsvorigeweekjson);
+        var controlsdezemaand=@Html.Raw(ViewBag.Controlsdezemaandjson);
+        var controlsvorigemaand=@Html.Raw(ViewBag.Controlsvorigemaandjson);
 
         var hitsvandaag = @Html.Raw(ViewBag.Hitsvandaagjson);
         var hitsgisteren=@Html.Raw(ViewBag.Hitsgisterenjson);
         var hitsdezeweek=@Html.Raw(ViewBag.Hitsdezeweekjson);
         var hitsvorigeweek=@Html.Raw(ViewBag.Hitsvorigeweekjson);
+        var hitsdezemaand=@Html.Raw(ViewBag.Hitsdezemaandjson);
+        var hitsvorigemaand=@Html.Raw(ViewBag.Hitsvorigemaandjson);
+
 
 
         console.log("controles vandaag : " +controlsvandaag.length);
         console.log("controles gisteren : "+controlsgisteren.length);
         console.log("controles deze week : "+controlsdezeweek.length);
         console.log("controles vorige week : "+controlsvorigeweek.length);
+        console.log("controles deze maand: "+controlsdezemaand.length);
+        console.log("controles vorige maand : "+controlsvorigemaand.length);
 
         console.log("hits vandaag : "+ hitsvandaag.length);
         console.log("hits gisteren : "+ hitsgisteren.length);
         console.log("hits deze week : "+ hitsdezeweek.length);
-        console.log("hits vorige week :" + hitsvorigeweek.length)
+        console.log("hits deze maand :" + hitsdezemaand.length)
+        console.log("hits vorige maand :" + hitsvorigemaand.length);
 
-        
-      
+
+
+
         var typecontrols = @Html.Raw(ViewBag.Typecontrolsjson);
-             
+
         var hittypes = @Html.Raw(ViewBag.Hittypesjson);
-      
+
 
         var dicttypecontrol = {
 
@@ -235,7 +259,13 @@
         $("#rangeselect").append("<option value=1>" + "gisteren"  + "</option>");
         $("#rangeselect").append("<option value=2>" + "deze week"  + "</option>");
         $("#rangeselect").append("<option value=3>" + "vorige week"  + "</option>");
-      
+        $("#rangeselect").append("<option value=4>" + "deze maand"  + "</option>");
+        $("#rangeselect").append("<option value=5>" + "vorige maand"  + "</option>");
+        $("#rangeselect").append("<option value=6>" + "bepaal zelf periode"  + "</option>");
+
+
+        $("#customrange").hide();
+
         var tablescantype = document.getElementById("controltable");
         var tablehittype = document.getElementById("hittable");
 
@@ -246,7 +276,7 @@
         for (i=0;i<typecontrols.length;i++) {
 
             var check = typecontrols[i];
-           
+
             var label = dicttypecontrol[check];
             var counter=0;
             for (j=0;j<controlsvandaag.length;j++){
@@ -410,13 +440,13 @@
                 tablehittype.deleteRow(x);
             }
 
-           
+
             var labeldict = {};
             var lengte;
             var lengtehit;
             var checklistcontrol =[];
             var checklisthit=[];
-                       
+
             checklistcontrol.length=0;
             checklisthit.length=0;
 
@@ -437,9 +467,9 @@
                     var lengtehit=hitsgisteren.length;
                     var checklisthit=hitsgisteren;
                 }
-                else 
+                else
                     if (rangeselect==2) {
-                        
+
                         var lengte=controlsdezeweek.length;
                         var checklistcontrol=controlsdezeweek;
                         var lengtehit=hitsdezeweek.length;
@@ -448,16 +478,40 @@
                     }
                     else
                         if (rangeselect==3) {
-                           
+
                             var lengte=controlsvorigeweek.length;
                             var checklistcontrol=controlsvorigeweek;
                             var lengtehit=hitsvorigeweek.length;
                             var checklisthit=hitsvorigeweek;
                         }
+                        else
+                            if(rangeselect==4){
+                                var lengte=controlsdezemaand.length;
+                                var checklistcontrol=controlsdezemaand;
+                                var lengtehit=hitsdezemaand.length;
+                                var checklisthit=hitsdezemaand;
+                            }
+                            else
+                                if(rangeselect==5){
+                                    var lengte=controlsvorigemaand.length;
+                                    var checklistcontrol=controlsvorigemaand;
+                                    var lengtehit=hitsvorigemaand.length;
+                                    var checklisthit=hitsvorigemaand;
+                                }
+                                else
+                                    if (rangeselect==6){$("#customrange").show();
+
+                                    }
+                                    
+           
+        
             
 
+                          
+
+
             //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
-            
+
 
             var counttypecontrol =[];
             var labelsoftypecontrols =[];
@@ -538,7 +592,7 @@
 
             };
 
-           
+
 
             var counttypehit =[];
             var labelsoftypehit =[];
@@ -554,7 +608,7 @@
                         counterhit= counterhit+1}
 
                 }
-               
+
                 var hittypeperc = ((counterhit/lengtehit)*100).toFixed(2);
                 counttypehit.push(hittypeperc);
                 labelsoftypehit.push(labelhit);
