@@ -3,6 +3,8 @@
     Layout = null;
 }
 
+@model  googlemapmvc1.Models.CustomRange
+
 <!DOCTYPE html>
 
 <html>
@@ -172,7 +174,16 @@
 
     <div class="row">
         <div class="col-sm-4">
-            <div id="customrange"> <p>"dit is een test"</p></div>
+            <div id="customrange">
+               @using (Html.BeginForm("customrangemethod", "Home", FormMethod.Post))
+               {
+                   @Html.TextBoxFor(m => m.Customstartdate, new { type = "date" })
+                   @Html.TextBoxFor(m => m.Customenddate, new { type = "date" })
+
+                   <input type="submit" value="Valideer"/>
+               }
+
+            </div>
 
         </div>
         <div class="col-sm-4">
@@ -223,23 +234,6 @@
         var hitsvorigeweek=@Html.Raw(ViewBag.Hitsvorigeweekjson);
         var hitsdezemaand=@Html.Raw(ViewBag.Hitsdezemaandjson);
         var hitsvorigemaand=@Html.Raw(ViewBag.Hitsvorigemaandjson);
-
-
-
-        console.log("controles vandaag : " +controlsvandaag.length);
-        console.log("controles gisteren : "+controlsgisteren.length);
-        console.log("controles deze week : "+controlsdezeweek.length);
-        console.log("controles vorige week : "+controlsvorigeweek.length);
-        console.log("controles deze maand: "+controlsdezemaand.length);
-        console.log("controles vorige maand : "+controlsvorigemaand.length);
-
-        console.log("hits vandaag : "+ hitsvandaag.length);
-        console.log("hits gisteren : "+ hitsgisteren.length);
-        console.log("hits deze week : "+ hitsdezeweek.length);
-        console.log("hits deze maand :" + hitsdezemaand.length)
-        console.log("hits vorige maand :" + hitsvorigemaand.length);
-
-
 
 
         var typecontrols = @Html.Raw(ViewBag.Typecontrolsjson);
