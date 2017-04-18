@@ -1,110 +1,180 @@
-﻿/****** Script for statistics of the scan scooter for today  ******/
-declare @begin datetime =convert(date,SUBSTRING(CONVERT(varchar,getDate(),120),1,10))
+﻿var markers = @Html.Raw(ViewBag.Jsonlist);
+        var patrollers =@Html.Raw(ViewBag.Patrollistjson);
+        var days = @Html.Raw(ViewBag.Daysjson);
+        var dayschron = days.reverse();
+        var colors = ["red","blue","yellow","green","orange"];
+        var infowindow = new google.maps.InfoWindow();
+        var gmarkers = [];
+        var vmarkers=[];
+        var dateselect = document.getElementById("dateselect");
+        var dateselected = dateselect.value;
 
 
-create table #ControlTypeLanguage (
-	CTLN_Type int, CTLN_Description varchar(255	) );
 
-Insert into #ControlTypeLanguage VALUES ( 0, 'Parking Monitor' ), (1, 'Uurrooster'), (2, 'SMS'), (3, 'Abonnement'), 
-			(5, 'Tweede RB'), (7, 'Bevroren Nummerplaat'), (20, 'Sensibilisering'), (100, 'YellowBrick'), (110, 'PayByPhone'),
-			(120, 'Parkeon'), (130, 'Mobigo'), (140, 'Presto'), (150, 'MobileFor'), (160, 'ParkMobile'), (170, 'Extenso'),
-			(180, 'CEVI'), (190, 'Hectronic'), (200, 'Parkare'), (999, 'TOTAAL');
+ //data for dateselector
+                     
+            document.getElementById("datetitle").innerHTML="number of scandays:  " + dayschron.length;
+        
+            for (i=0;i<dayschron.length;i++) {
 
+                var dayformatted = moment(dayschron[i]).format("DD/MM/YYYY");
+                var datenode = document.createElement("li");
+                var datetext = document.createTextNode( dayformatted);
+                datenode.appendChild(datetext);
+                document.getElementById("dates-list").appendChild(datenode);
+            
 
-create table #sctoday ( SCTD_Type int, SCTD_LPHS_ID uniqueidentifier );
+            };
+            
 
-insert into #sctoday
-  SELECT (CASE WHEN PMQU.HTQU_ID IS NULL THEN LHDT.LHDT_TypeControle ELSE 0 END),LPHS.LPHS_ID FROM
-  (SELECT DISTINCT LPHS_ValidationGroup_ID FROM LicenseplateHistory2
-  WHERE LPHS_MOBI_ID = '25F56799-008C-4896-9ADD-685D121DDB7A' AND LPHS_CreatedOn >= @begin)  A
-  CROSS APPLY
-        (
-        SELECT  TOP 1 *
-        FROM    LicenseplateHistory2 AS B
-        WHERE   B.LPHS_ValidationGroup_ID = A.LPHS_ValidationGroup_ID AND B.LPHS_MOBI_ID = '25F56799-008C-4896-9ADD-685D121DDB7A'
-		ORDER BY LPHS_CreatedOn DESC
-        ) LPHS
- LEFT JOIN [PARKINGMONITORQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] AS PMQU ON LPHS.LPHS_ValidationGroup_ID = HTQU_ID
- LEFT JOIN LicenseplateHistoryDetail AS LHDT ON LHDT_LPHS_ID = LPHS.LPHS_ID AND LHDT_ContinueTicket = 0
+            for (i=0;i<dayschron.length;i++) {
+                var dayformat1 = moment(dayschron[i]).format("DD/MM/YYYY");
+                console.log(dayformat1)
+                $("#dateselect").append("<option value=" + dayformat1 +">" +  dayformat1 + "</option>")
 
- --select * FROM #sctoday ORDER BY SCTD_Type
+            };
+                
 
- create table #scresults ( SCRS_Type int, SCRS_Count int )
+            $('#dateselect').on('change',function() {
 
-insert into #scresults
-Select SCTD_TYPE,COUNT(*) 
-from #sctoday
-GROUP BY SCTD_TYPE
+                dateselected = this.value;
+                vmarkers=[];
 
-insert into #scresults
-values ( 999, (SELECT COUNT(*) FROM #sctoday) )
+                for (i=0; i<markers.length; i++) {
 
+                    marker = gmarkers[i];
+                    
+                   
+                    if(marker.category == dateselected  || dateselected.length == 0  ) {
+                        marker.setVisible(true);
+                        vmarkers.push(marker);
+                    }
 
-declare @sql2 varchar(max) = 
-'Select (SELECT CTLN_DEscription FROM #ControlTypeLanguage WHERE CTLN_Type = SCRS_Type) AS ''Type Scan'',SCRS_Count AS ''Aantal ' + CONVERT(varchar,@begin,103) +
-''' from #scresults
-  order by SCRS_Type'
-EXEC(@SQL2)
+                                else{ marker.setVisible(false);
+                                }
+                }
 
+                showVisibleMarkers(vmarkers);
+                markerCluster.clearMarkers();
+                markerCluster.addMarkers(vmarkers);
+                
+                        })
+        
+           
+       
+        //make map and add marker 
+        function makemap()
 
-drop table #scresults
-drop table #sctoday
-drop table #ControlTypeLanguage
+        {
+            var mapOptions =    {
+                center: new google.maps.LatLng(51.20858,3.227961),
+                zoom: 14,
+                mapTypeId: google.maps.MapTypeId.HYBRID
+            };
+            
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                     
 
-create table #StepLanguage (
-	STLN_Step int, STLN_Description varchar(255	) );
+            for (i = 0; i < markers.length; i++) {
+                addMarker(markers[i]);}
+                       
 
-Insert into #StepLanguage VALUES ( 0, 'Ongewerkte hit' ), (1, 'Geannuleerde hit'), (2, 'Gevalideerde hit'), (4, 'Duplicate hit'), (9, 'TOTAAL');
+            for (i = 0; i < markers.length; i++) {
+                                  
+               
+                for (j=0;j< (markers.length-i);j++) {
+                    var pos = {lat : markers[i].HTQU_Latitude, lng : markers[i].HTQU_Longitude};
 
-create table #pmtoday ( PMTD_Step int, PMTD_HTQU_ID uniqueidentifier );
-
-insert into #pmtoday
-select HTQU_STEP, HTQU_ID FROM [ParkingMonitorQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] 
-WHERE HTQU_CReatedOn >= @begin
-
-UPDATE #pmtoday 
-SET PMTD_Step = 2
-WHERE PMTD_Step = 1 AND EXISTS (SELECT 1 FROM [MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28] 
-								WHERE HTQU_ID = PMTD_HTQU_ID)
-
-
-create table #pmresults ( PMRS_Step int, PMRS_Count int )
-
-insert into #pmresults
-Select PMTD_STEP,COUNT(*) 
-from #pmtoday
-GROUP BY PMTD_STEP
-
-insert into #pmresults
-values ( 9, (SELECT COUNT(*) FROM #pmtoday) )
-
-
-declare @sql3 varchar(max) = 
-'Select (SELECT STLN_DEscription FROM #StepLanguage WHERE STLN_Step = PMRS_STEP) AS ''Type Hit'',PMRS_Count AS ''Aantal ' + CONVERT(varchar,@begin,103) +
-''' from #pmresults
-  order by PMRS_STEP'
-EXEC(@SQL3)
-
-drop table #StepLanguage
-drop table #pmtoday
-drop table #pmresults
+                    var posnext =  {lat : markers[j].HTQU_Latitude, lng : markers[j].HTQU_Longitude};
+                   
+                    if (pos == posnext) {
+                        var a = 360.0 / markers.length;
+                        var newLat = pos.lat() + -.00004 * Math.cos((+a*i) / 180 * Math.PI);  //x
+                        var newLng = pos.lng() + -.00004 * Math.sin((+a*i) / 180 * Math.PI);  //Y
+                        var latLng = new google.maps.LatLng(newLat,newLng);
+                    }
 
 
-declare @sql varchar(max) = 
-'SELECT  (CASE WHEN HTQU_AssignedtoStepUSER_ID IS NULL THEN ''Onverwerkt'' ELSE (SELECT USER_NAME FROM [User] WHERE USER_ID = HTQU_AssignedtoStepUSER_ID) END) AS ''Parkeerwachter'',
-		COUNT(*) AS ''Aantal ' + CONVERT(varchar,getDate(),103) + ''',
-		SUM(CASE WHEN LPHS_SLFT_ID IS NULL THEN 0 ELSE 1 END) AS ''Retributie'',
-		SUM(CASE WHEN LPHS_ValidType_Id IS NULL THEN 0 ELSE 1 END) AS ''Geldig'',
-		SUM(CASE WHEN LPHS_IsUnchecked = 1 THEN 1 ELSE 0 END) AS ''Weggereden''
-  FROM [dbo].[MOBILEQueue_LOCT_F850F71B-CFB8-469A-A092-88D3E207CC28]
-  CROSS APPLY
-        (
-        SELECT  TOP 1 *
-        FROM    LicenseplateHistory2
-        WHERE   LPHS_ValidationGroup_ID = HTQU_ID
-		ORDER BY LPHS_CreatedOn DESC
-        ) LPHS
-  WHERE [HTQU_CreatedOn] >= ''' + CONVERT(varchar,@begin,120)	 + '''
-  GROUP BY HTQU_AssignedtoStepUSER_ID
-  ORDER BY HTQU_AssignedtoStepUSER_ID'
-  EXEC(@SQL)
+                }
+
+              
+            };
+
+        }
+
+                
+        function addMarker(marker) {
+
+            var category = moment(marker.HTQU_CreatedOn).format("DD/MM/YYYY");
+            var pos = new google.maps.LatLng(marker.HTQU_Latitude,marker.HTQU_Longitude);
+
+
+            var datetimestring = moment(marker.HTQU_CreatedOn).format("MMMM Do YYYY, h:mm:ss a");
+
+            var title = datetimestring;
+            var content = datetimestring;
+
+            var iconcolor = colors[patrollers.indexOf(marker.HTQU_PatrollerMOBI_ID)]
+
+
+            marker = new google.maps.Marker({
+
+                title : title,
+                position : pos,
+                category : category,
+
+                map: map,
+                animation : google.maps.Animation.DROP,
+                icon : 'http://www.google.com/intl/en_us/mapfiles/ms/micons/' + iconcolor + '-dot.png',
+
+
+            });
+
+            gmarkers.push(marker);
+
+            //Marker click listener
+            google.maps.event.addListener(marker, 'click', function () {
+
+                infowindow.setOptions({
+                    content : this.title,
+                                })
+
+                infowindow.open(map, marker);
+
+                var posstring = String(pos);
+
+
+                console.log(posstring)
+                document.getElementById("infotext").innerHTML="<b>Data selected marker</b><br><br><u>Date and time : </u><br>"+ title + "<br><br> <u>Coordinates : </u><br>" + posstring.match(/[^()]+/)
+                 })
+
+        };
+        function showVisibleMarkers(fmarkers) {
+            var bounds = map.getBounds();
+            count = 0;
+
+            for (var i=0; i< fmarkers.length;i++) {
+
+                var marker = fmarkers[i];
+                if(bounds.contains(marker.getPosition())===true) {
+                    count++
+
+                }
+            }
+            $("#statistic").html(count + " reads in actual zoom");
+
+        }
+
+        
+
+        makemap();
+        google.maps.event.addListener(map,'idle',function(){
+            showVisibleMarkers(gmarkers);
+
+        })
+   
+        var markerCluster = new MarkerClusterer(map, gmarkers,
+            {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+        
+        var countday = []
+        //code for chart

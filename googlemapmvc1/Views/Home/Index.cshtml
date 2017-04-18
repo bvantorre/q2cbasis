@@ -3,8 +3,6 @@
     Layout = null;
 }
 
-@model  googlemapmvc1.Models.CustomRange
-
 <!DOCTYPE html>
 
 <html>
@@ -43,13 +41,8 @@
               font-size : 12px;
               padding : 2px; background-color:#F2F6F7;
 
-
    }
   
-  
-
-  
-    
     select { border-radius : 10px; font-family: 'Open Sans', sans-serif;
               font-size : 12px;
               padding : 6px 1px;background-color:#F2F6F7
@@ -73,8 +66,6 @@
               font-size : 11px;
               padding : 10px;background-color:#F2F6F7
 
-
-
     }
 
   #tablehits {border : 1px;border-style : solid; border-color : black;
@@ -83,9 +74,7 @@
               font-size : 11px;
               padding : 10px;background-color:#F2F6F7
 
-
   }
-
 
   #piecharthits {
               border : 2px;border-style : solid; border-color : black;
@@ -107,9 +96,6 @@
 
      }   
 
-     
-   
-    
     </style>
 </head>
 <body>
@@ -123,17 +109,9 @@
 
     </nav>
 
-    
-
-    
-
-
-
     <div class="container">
     <div class="row">
 
-
-       
             <div class="col-sm-4">
                 <div id="rangeselector">
                     <p>Kies periode voor data analyse </p>
@@ -151,15 +129,12 @@
                
 
             </div>
-         
-       
-
+  
         <div class="col-sm-4">
             <div id="piechartcontrol">
                 <canvas id="piechartcanvascontrol"></canvas>
             </div>
         </div>
-
 
             <div class="col-sm-4">
                 <div id="piecharthits">
@@ -168,18 +143,12 @@
             </div>
 
 
-
         </div>
-
 
     <div class="row">
         <div class="col-sm-4">
             <div id="customrange">
-               @using (Html.BeginForm("customrangemethod", "Home", FormMethod.Post))
-               {
-                   @Html.TextBoxFor(m => m.Customstartdate, new { type = "date" })
-                   @Html.TextBoxFor(m => m.Customenddate, new { type = "date" })
-
+  
                    <input type="submit" value="Valideer"/>
                }
 
@@ -219,7 +188,6 @@
     </div>
    
     <script type="text/javascript">
-
 
         var controlsvandaag = @Html.Raw(ViewBag.Controlsvandaagjson);
         var controlsgisteren=@Html.Raw(ViewBag.Controlsgisterenjson);
@@ -311,15 +279,7 @@
             data : {
                 labels :labelsoftypecontrols,
                 datasets : [{
-                    backgroundColor: [
-                    "#2ecc71",
-                    "#3498db",
-                    "#95a5a6",
-                    "#9b59b6",
-                    "#f1c40f",
-                    "#e74c3c",
-                    "#34495e"
-                    ],
+                    backgroundColor: ["#2ecc71","#3498db","#95a5a6","#9b59b6","#f1c40f","#e74c3c","#34495e"],
                     label : "percentage",
                     data : counttypecontrol
                 }]
@@ -334,7 +294,6 @@
                         return tooltipLabel + ': ' + tooltipData +  '%';
                     }
                 }}
-
 
             }}) ;
 
@@ -368,8 +327,6 @@
             cella.innerHTML = labelhit;
             cellb.innerHTML = counterhit;
             cellc.innerHTML = hittypeperc;
-
-
         };
         var rowtotalhit = tablehittype.insertRow(hittypes.length+1);
         var celltotalhit1 = rowtotalhit.insertCell(0);
@@ -380,25 +337,14 @@
         celltotalhit2.innerHTML= hitsvandaag.length;
         celltotalhit3.innerHTML="100%";
 
-
         var canvashit = document.getElementById("piechartcanvashits")
         var ctxhit = canvashit.getContext("2d");
-
-
         var hitpieChart = new Chart (ctxhit, {
             type : 'pie',
             data : {
                 labels :labelsoftypehit,
                 datasets : [{
-                    backgroundColor: [
-                    "#2ecc71",
-                    "#3498db",
-                    "#95a5a6",
-                    "#9b59b6",
-                    "#f1c40f",
-                    "#e74c3c",
-                    "#34495e"
-                    ],
+                    backgroundColor: ["#2ecc71","#3498db","#95a5a6","#9b59b6","#f1c40f","#e74c3c","#34495e"],
                     label : "percentage",
                     data : counttypehit
                 }]
@@ -409,11 +355,9 @@
                         var allData = data.datasets[tooltipItem.datasetIndex].data;
                         var tooltipLabel = data.labels[tooltipItem.index];
                         var tooltipData = allData[tooltipItem.index];
-
                         return tooltipLabel + ': ' + tooltipData +  '%';
                     }
                 }}
-
 
             }}) ;
 
@@ -433,7 +377,6 @@
 
                 tablehittype.deleteRow(x);
             }
-
 
             var labeldict = {};
             var lengte;
@@ -496,16 +439,8 @@
                                     if (rangeselect==6){$("#customrange").show();
 
                                     }
-                                    
-           
-        
-            
-
-                          
-
-
+       
             //code calculate data for piechart typecontrols (e.g. PM, abonnement,...)
-
 
             var counttypecontrol =[];
             var labelsoftypecontrols =[];
@@ -548,45 +483,14 @@
 
             //code to make piechart control type dynamically
 
-            var controlpieChart = new Chart (ctxcontrol, {
-                type : 'pie',
-                data : {
-                    labels :labelsoftypecontrols,
-                    datasets : [{
-                        backgroundColor: [
-                        "#2ecc71",
-                        "#3498db",
-                        "#95a5a6",
-                        "#9b59b6",
-                        "#f1c40f",
-                        "#e74c3c",
-                        "#34495e"
-                        ],
-                        label : "percentage",
-                        data : counttypecontrol
-                    }]
-                },options : { responsive :true,maintainAspectRatio : false,
-                    title : {display : true, text : "ratio type control  ",padding : 2},legend :{labels :{ boxWidth: 20}},
-                    tooltips :{ callbacks: {
-                        label: function(tooltipItem, data) {
-                            var allData = data.datasets[tooltipItem.datasetIndex].data;
-                            var tooltipLabel = data.labels[tooltipItem.index];
-                            var tooltipData = allData[tooltipItem.index];
+            controlpieChart.data.datasets[0].data = counttypecontrol;
+            controlpieChart.data.labels=labelsoftypecontrols;
+            controlpieChart.update();
 
-                            return tooltipLabel + ': ' + tooltipData +  '%';
-                        }
-                    }}
-
-
-                }}) ;
-
-            //code to make piechart hits and table hits dynamically by dateselector
             var dicttypehits = {
                 0 :'ongewerkte hit',1 :'geannuleerde hit', 2: 'gevalideerde hit', 4: 'Duplicate hit'
 
             };
-
-
 
             var counttypehit =[];
             var labelsoftypehit =[];
@@ -615,7 +519,6 @@
                 cellb.innerHTML = counterhit;
                 cellc.innerHTML = hittypeperc;
 
-
             };
 
             var rowtotalhit = tablehittype.insertRow(hittypes.length+1);
@@ -627,44 +530,9 @@
             celltotalhit2.innerHTML= lengtehit;
             celltotalhit3.innerHTML="100%";
 
-            var canvas = document.getElementById("piechartcanvashits")
-            var ctx = canvas.getContext("2d");
-
-
-
-            var hitpieChart = new Chart (ctxhit, {
-                type : 'pie',
-                data : {
-                    labels :labelsoftypehit,
-                    datasets : [{
-                        backgroundColor: [
-                        "#2ecc71",
-                        "#3498db",
-                        "#95a5a6",
-                        "#9b59b6",
-                        "#f1c40f",
-                        "#e74c3c",
-                        "#34495e"
-                        ],
-                        label : "percentage",
-                        data : counttypehit
-                    }]
-                },options : { responsive :true,maintainAspectRatio : false,
-                    title : {display : true, text :" ratio type hits",padding : 2},legend :{labels :{ boxWidth: 20}},
-                    tooltips :{ callbacks: {
-                        label: function(tooltipItem, data) {
-                            var allData = data.datasets[tooltipItem.datasetIndex].data;
-                            var tooltipLabel = data.labels[tooltipItem.index];
-                            var tooltipData = allData[tooltipItem.index];
-
-                            return tooltipLabel + ': ' + tooltipData +  '%';
-                        }
-                    }}
-
-
-                }}) ;
-
-
+            hitpieChart.data.datasets[0].data = counttypehit;
+            hitpieChart.data.labels=labelsoftypehit;
+            hitpieChart.update();
 
         });
 
